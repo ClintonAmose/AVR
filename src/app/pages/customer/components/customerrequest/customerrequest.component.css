@@ -1,0 +1,29 @@
+.detailview label{
+	color:#FFFFFF !important;
+}
+.orderdetail{
+	border-bottom: 1px solid #a0bddd;
+	margin-bottom: 10px;
+    line-height: 1.5;
+}
+.white{
+	color: #fff !important;
+}
+* {
+    box-sizing: border-box;
+}
+
+
+.zoom {
+    padding: 50px;
+    transition: transform .2s;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+}
+
+.zoom:hover {
+    -ms-transform: scale(1.5); /* IE 9 */
+    -webkit-transform: scale(1.5); /* Safari 3-8 */
+    transform: scale(1.5); 
+}

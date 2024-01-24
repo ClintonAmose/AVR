@@ -1,0 +1,137 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<div id="backgroundPopup_1" align="center"  *ngIf="records.length==0"><img src="{{defaultPicture}}" alt="Please Wait..." style="margin-top:150px;width:100px;" /></div>	
+<div id="displaying_1" *ngIf="records.length>0">
+<div class="widgets" *ngIf="accessData.view == 1">
+    <div class="row">
+		            <div class='col-sm-3'>
+			        </div>
+					<label>From:</label>
+					<div class='col-sm-2'>
+					<my-date-picker  name="from_day"
+							#overdue="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="filter_records.from_day"></my-date-picker>
+		           </div>
+				    <label>To:</label>
+				    <div class='col-sm-2'>
+				      <my-date-picker  name="last_day" 
+							#overdue="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="filter_records.last_day"></my-date-picker>
+				  </div>
+				  <label><button (click)="getfilter_data()" class="btn btn-success btn-with-icon" type="button"><i class="fa fa-search"></i></button></label>
+	 </div>
+	<div class="row">
+		<ba-card title="Customer Delivery Ready Details"
+			baCardClass="with-scroll" class="data-table-container">
+		<div class="row filter-search">
+			<div class='col-sm-3'>
+				<input class="form-control" placeholder="Search ..." [(ngModel)]="filterQuery" />
+			</div>
+			<div class='col-sm-3'></div>
+			<div class="offset-sm-3 col-sm-3">
+					 <button (click)="exportToExcel()" class="btn btn-primary btn-with-icon" type="button">Export </button>
+				</div>
+		</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th style="width: 3%" class="text-center">Image</th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="orderdate">Ord Date</mfDefaultSorter></th>
+						<th style="width: 8%" class="text-center"><mfDefaultSorter
+								by="customer_ref_no">Ref No</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="order_to">Customer</mfDefaultSorter></th>
+						<th style="width: 5%" class="text-center"><mfDefaultSorter
+								by="branch_customer">Branch</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="employee">Employee</mfDefaultSorter></th>
+						<th style="width: 12%" class="text-center"><mfDefaultSorter
+								by="id_product">Product</mfDefaultSorter></th>
+						<th style="width: 5%" class="text-center"><mfDefaultSorter
+								by="totalitems">Items</mfDefaultSorter></th>			
+						<th style="width: 5%" class="text-center"><mfDefaultSorter
+								by="weight">Weight</mfDefaultSorter></th>
+						<th style="width: 5%" class="text-center">Size</th>
+						<th style="width: 5%" class="text-center"><mfDefaultSorter
+								by="deliverydate">Vendor</mfDefaultSorter></th>
+						<th style="width: 17%" class="text-center"><mfDefaultSorter
+								by="orderstatus">Status</mfDefaultSorter></th>
+						 <th style="width: 5%" class="text-center"><mfDefaultSorter
+								by="deliverydate">Delivery Date</mfDefaultSorter></th>
+						<th style="width: 5%" class="text-center"><mfDefaultSorter
+								by="deliverydate">Received Date(ven)</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="delivered_date">Delivered Date</mfDefaultSorter></th>
+						<th class="text-center" style="width: 16%"><mfDefaultSorter
+								by="id_orderdetails">Order No.</mfDefaultSorter></th>
+					    <th style="width: 20%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody >
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center"><img src="{{item.image}}" width="40" height="35"></td>
+						<td class="text-center">{{item.orderdate}}</td>
+						<td class="text-center">{{item.customer_ref_no}}</td>
+						<td class="text-center">{{item.order_to}}</td>
+						<td class="text-center">{{item.branch_customer}}</td>
+						<td class="text-center">{{item.employee}}</td>
+						<td class="text-center">{{item.id_product}}</td>
+						<td class="text-center">{{item.qty}}</td>
+						<td class="text-center">{{item.weight}}</td>
+                        <td class="text-center">{{item.size == '' ? '-':item.size}}</td>
+                        <td class="text-center">{{item.vendor_name}}</td>
+						<td class="text-center">{{item.orderstatus}}</td> 
+						<td class="text-center">{{item.deliverydate}}</td>
+						<td class="text-center">{{item.deliveredon}}</td>
+						<td class="text-center">{{item.delivered_date}}</td>
+						<td class="text-center">{{item.orderno}}</td>
+						 <td class="text-center"><span *ngIf="item.orderstatus!='Delivery Ready'"><button
+								class="btn btn-success btn-icon" type="button"
+								title="ReOrders"
+								(click)="reorderdetails(item.id,item)">
+								<i class="fa fa-registered"></i>
+							</button>{{item.is_reorder=='1'?'Rework':''}}</span></td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="17"><mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+	
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#editModal>
+	<form #designbomformation="ngForm" novalidate>
+		<div class="col-md-12">
+			      <div class="form-group">
+						 <label for="options">Remarks</label><textarea 
+						class="form-control" #MinWt="ngModel"
+						[(ngModel)]="rejectdetails.reject_reason" name="reject_reason"
+						placeholder="Enter Reject Reason Here..." required></textarea>
+					</div>
+		</div>
+	</form>
+	<br />
+	<br />
+     <div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-fabkinect' (click)="saverejectorder(false,true)"
+				[disabled]="!designbomformation.valid" *ngIf="!isEditMode">Confirm</button>
+			<button class='btn btn-default' (click)="model_close()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindModal(editModal) }}
+	
+	
+</div></div>

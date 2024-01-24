@@ -1,0 +1,317 @@
+<div class="widgets">
+	<div class="row">
+		<ba-card title="Catalogue List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+		<div class="row">
+			<div class="col-sm-2">
+				<label class="label-control">Rows on page</label> <select
+					class="form-control input-sm" [(ngModel)]="rowsOnPage">
+					<option [ngValue]="5">5</option>
+					<option [ngValue]="10">10</option>
+					<option [ngValue]="15">15</option>
+				</select>
+			</div>
+			<div class="col-sm-4">
+				<div class="row">
+					<label class="col-sm-12 label-control">Sort by</label>
+				</div>
+				<div class="row">
+					<div class="offset-sm-1 col-sm-5">
+						<div class="row">
+							<select class="form-control input-sm" [(ngModel)]="sortBy">
+								<option ngValue="name">Name</option>
+								<option ngValue="code">Code</option>
+								<option ngValue="status">Satatus</option>
+							</select>
+						</div>
+					</div>
+					<div class="offset-sm-1 col-sm-5">
+						<div class="row">
+							<select class="form-control input-sm" [(ngModel)]="sortOrder">
+								<option ngValue="asc">Ascending</option>
+								<option ngValue="desc">Descending</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<div class="row">
+					<label class="col-sm-12 label-control">Filter with</label>
+				</div>
+				<div class="row">
+					<div class="offset-sm-1 col-sm-5">
+						<div class="row">
+							<input class="form-control" [(ngModel)]="filterQuery" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">Product Information</div>
+			<div class="text-right">
+				<button class="btn btn-primary btn-with-icon" type="button"
+					(click)="newProduct(1,0)">
+					<i class="ion-plus-round"></i>New Product
+				</button>
+			</div>
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th style="width: 10%" class="text-center">Id</th>
+						<th style="width: 20%" class="text-center"><mfDefaultSorter
+								by="name">Name</mfDefaultSorter></th>
+						<th style="width: 20%" class="text-center"><mfDefaultSorter
+								by="category">Category Name</mfDefaultSorter></th>
+						<th style="width: 20%" class="text-center"><mfDefaultSorter
+								by="code">Code</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="status">Status</mfDefaultSorter></th>
+						<th style="width: 20%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let product of mf.data">
+						<td class="text-center">{{product.id_product}}</td>
+						<td>{{product.name}}</td>
+						<td>{{product.category}}</td>
+						<td class="text-center">{{product.code}}</td>
+						<td class="text-center">{{ (product.status == 1) ? 'Active' :
+							'In Active'}}</td>
+						<td class="text-center"><button
+								class="btn btn-primary btn-icon" type="button"
+								(click)="newProduct(2,product.id_product)">
+								<i class="ion-edit"></i>
+							</button> &nbsp;&nbsp;
+							<button (click)="imageProduct(product.id_product)"
+								class="btn btn-primary btn-icon" type="button">
+								<i class="fa fa-file-image-o"></i>
+							</button> &nbsp;&nbsp;
+							<button (click)="deleteProduct(product.id_product)"
+								class="btn btn-danger ion-trash-a"></button></td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="6"><mfBootstrapPaginator
+								[rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#editModal>
+	<form #productfrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<div class="form-group">
+						<label for="input01">Select Item*</label> <select
+							class="form-control" [(ngModel)]="productdet.id_item"
+							name="pcategory" #pcategory="ngModel" required>
+							<option *ngFor="let itm of items" [value]="itm.id_item"
+								class="list-group-product">{{itm.name_item}}</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="input01">Product Name*</label> <input type="text"
+							class="form-control" #ProductName="ngModel"
+							[(ngModel)]="productdet.name" name="ProductName" autofocus
+							placeholder="Product Name" required>
+					</div>
+					<div class="form-group">
+						<label for="input01">Product Code*</label> <input type="text"
+							class="form-control" #ProductCode="ngModel"
+							[(ngModel)]="productdet.code" name="ProductCode"
+							placeholder="Product Code" required>
+					</div>
+
+					<div class="form-group">
+						<label for="input01">Product Description</label>
+						<textarea class="form-control" id="description"
+							#ProDescription="ngModel" [(ngModel)]="productdet.description"
+							name="#ProDescription" placeholder="Product Description"></textarea>
+					</div>
+					<div class="form-group">
+						<label for="description">Rate</label> <input type="text"
+							class="form-control" #Rate="ngModel"
+							[(ngModel)]="productdet.gold_value" name="Rate"
+							placeholder="Rate" required>
+					</div>
+					<div class="form-group">
+						<label for="description">Tax</label> <input type="text"
+							class="form-control" #Tax="ngModel" [(ngModel)]="productdet.tax"
+							name="Tax" placeholder="Enter Tax">
+					</div>
+					<div class="form-group">
+						<label for="description">Stone Charge</label> <input type="text"
+							class="form-control" #StoneCharge="ngModel"
+							[(ngModel)]="productdet.stone_charges" name="StoneCharge"
+							placeholder="Enter Stone Charge" required>
+					</div>
+					<div class="form-group">
+						<label for="description">Making Charge</label> <input type="text"
+							class="form-control" #MakingCharge="ngModel"
+							[(ngModel)]="productdet.making_charges" name="MakingCharge"
+							placeholder="Enter Making Charge" required>
+					</div>
+					<div class="form-group">
+						<label for="description">Allowed Order Qty</label> <input
+							type="text" class="form-control" #AllowedOrderQty="ngModel"
+							[(ngModel)]="productdet.allowed_order_qty" name="AllowedOrderQty"
+							placeholder="Allowed Order Qty" required>
+					</div>
+					<div class="form-group">
+						<label for="description">Weight</label> <input type="text"
+							class="form-control" #Weight="ngModel"
+							[(ngModel)]="productdet.weight" name="Weight"
+							placeholder="Enter Weight" required>
+					</div>
+					<div class="form-group">
+						<label for="input01">Select Metal*</label> <select
+							class="form-control" [(ngModel)]="productdet.id_metal"
+							name="pMetal" #pMetal="ngModel" required>
+							<option [value]="" class="list-group-product">-Select
+								Metal -</option>
+							<option [value]="1" class="list-group-product">Gold</option>
+							<option [value]="2" class="list-group-product">Silver</option>
+							<option [value]="3" class="list-group-product">Diamond</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="input01">Status</label>
+						<div class="input-demo radio-demo row">
+							<div class="col-md-4">
+								<label class="radio-inline custom-radio nowrap"> <input
+									type="radio" [(ngModel)]="productdet.status" name="status"
+									id="active" value="1"> <span>Active</span>
+								</label>
+							</div>
+							<div class="col-md-4">
+								<label class="radio-inline custom-radio nowrap"> <input
+									type="radio" [(ngModel)]="productdet.status" name="status"
+									id="inactive" value="0"> <span>Inactive</span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="saveProduct(false,false)"
+				[disabled]="!productfrm.valid" *ngIf="isAddMode">Save & New</button>
+			<button class='btn btn-success' (click)="saveProduct(false,true)"
+				[disabled]="!productfrm.valid" *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect' (click)="saveProduct(true,true)"
+				[disabled]="!productfrm.valid" *ngIf="isEditMode">Save &
+				Close</button>
+			<button class='btn btn-default' (click)="close()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindModal(editModal) }}
+
+
+	<app-modal [title]='title' [showClose]="true"
+		(onClose)="closedeletepopup()" #deleteModal>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group deletemsg">Are you sure, you want to
+				delete this product?</div>
+		</div>
+	</div>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-danger'
+				(click)="removeProduct(productdet.id_product)">Delete</button>
+			<button class='btn btn-default' (click)="closedeletepopup()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ binddeleteModal(deleteModal) }}
+
+	<app-modal [title]='title' [showClose]="true"
+		(onClose)="closeImageModal()" #imageModal>
+	<form #categoryimgfrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+				<ba-card title="Category Image" baCardClass="with-scroll">
+				<ba-picture-uploader [picture]="productimage.imgurl"
+					[defaultPicture]="defaultPicture"
+					[uploaderOptions]="uploaderOptions"
+					(onUpload)="handleUpload($event)"></ba-picture-uploader> </ba-card>
+				<div class="form-group">
+					<div *ngIf="uploadFile" class="uploadfilelbl">Progress: {{
+						uploadProgress }}%</div>
+					<div *ngIf="uploadFile">
+						<div class="ui indicating olive progress">
+							<div class="bar" [style.width]="uploadProgress + '%'"></div>
+							<div class="label">Uploading file ({{ uploadProgress }}%)</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- <hot-table [data]="imgData" [col-headers]="colHeaders"
+			[options]="options"></hot-table> -->
+		<div class="row">
+			<table class="table table-striped image-table">
+				<thead>
+					<tr>
+						<th style="width: 10%" class="text-center">S.No</th>
+						<th style="width: 40%" class="text-center">Image</th>
+						<th style="width: 30%" class="text-center">Default</th>
+						<th style="width: 20%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let product of productimagedata;let i = index"
+						[attr.data-index]="i">
+						<td class="text-center">{{(i+1)}}</td>
+						<td><img style="max-width: 100%;" src="{{product.imgurl}}"></td>
+						<td>{{product.is_default == 1 ? 'Yes' : 'No'}}</td>
+						<td class="text-center">
+							<button (click)="deleteProductImage(product.id_image)"
+								class="btn btn-danger ion-trash-a"></button>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="4"></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+	</form>
+	<br />
+	<br />
+	<!-- <div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary'
+				(click)="saveImageCategory(categoryimage.id_category)"
+				[disabled]="!categoryimgfrm.valid">Save</button>
+			<button class='btn btn-default' (click)="closeimgpopup()">Close</button>
+		</div>
+	</div> --> </app-modal>
+	{{ bindImageModal(imageModal) }}
+
+
+</div>

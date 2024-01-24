@@ -1,0 +1,195 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<div id="backgroundPopup_1" align="center"  *ngIf="records.length==0"><img src="{{loadingPicture}}" alt="Please Wait..." style="margin-top:150px;width:100px;" /></div>	
+<div id="displaying_1" *ngIf="records.length>0">
+<div class="widgets" *ngIf="accessData.view == 1">
+    <div class="row">
+		            <div class='col-sm-3'>
+			        </div>
+					<label>From:</label>
+					<div class='col-sm-2'>
+					<my-date-picker  name="from_day"
+							#overdue="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="filter_records.from_day"></my-date-picker>
+		           </div>
+				    <label>To:</label>
+				    <div class='col-sm-2'>
+				      <my-date-picker  name="last_day" 
+							#overdue="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="filter_records.last_day"></my-date-picker>
+				  </div>
+				  <label><button (click)="getfilter_data()" class="btn btn-success btn-with-icon" type="button"><i class="fa fa-search"></i></button></label>
+	 </div>
+	<div class="row">
+		<ba-card title="Admin Order List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+		<div class="row filter-search">
+			<div class="col-sm-3">
+				<input class="form-control" placeholder='Search ...' [(ngModel)]="filterQuery" />
+			</div>
+			<div class="col-sm-3 offset-sm-3" *ngIf="accessData.add == 1" >
+				<a translate (click)="createadminorderdetails()"><button
+						class="btn btn-primary btn-with-icon" type="button">
+						<i class="ion-plus-round"></i>New Order
+					</button></a>
+			</div>
+			<div class="col-sm-3"  *ngIf="accessData.add == 1">
+					<a routerLink="/pages/stock/customerbulkorder" translate><button
+						class="btn btn-success btn-with-icon" type="button">
+						<i class="fa fa-arrow-circle-right"></i>Bulk orders
+					</button></a>
+	             </div>
+		</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th class="text-center" style="width: 7%">Image</th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="id_orderdetails">Order No.</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="order_to">Branch</mfDefaultSorter></th>
+						<th class="text-center" style="width: 20%"><mfDefaultSorter
+								by="id_product">Item</mfDefaultSorter></th>
+						<th class="text-center" style="width: 8%"><mfDefaultSorter
+								by="totalitems">Quantity</mfDefaultSorter></th>
+						<th class="text-center" style="width: 5%"><mfDefaultSorter
+								by="weight">Weight</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="order_date">Order Date</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="deliverydate">Del Date</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="vendors">Karigar</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="orderstatus">Status</mfDefaultSorter></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data" >
+						<td class="text-center"><img (click)='downloadImgFile(item.image)' src="{{item.image}}"  width="40" height="35">
+						<div (click)="orderImage(item.id_orderdetails)" *ngIf='item.is_customeitem == "Yes" && item.customimages?.length >0'>View</div></td>
+						<td class="text-center">{{item.orderno}}</td>
+						<td>{{item.order_to}}</td>
+						<td class="text-center">{{item.id_product}}</td>
+						<td class="text-center">{{item.totalitems}}</td>
+						<td>{{item.weight}}</td>
+						<td class="text-center">{{item.order_date}}</td>
+						<td class="text-center">{{item.deliverydate}}</td>
+						<td>{{item.vendors}}</td>
+						<td>{{item.orderstatus}}</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="12"><mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+     </div>
+
+	 <app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#editModal>
+	<form #designbomformation="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+			      <div class="form-group">
+				      <div class="row">
+					         <div class="col-md-6">
+								<label for="input01">Design*</label>
+								<ng2-completer #remoteDataExample name="name"
+								class="completer-limit" [(ngModel)]="adminorderdetails.name"
+								[datasource]="itemsRemote" [minSearchLength]="3"
+								[placeholder]="'Search for Design'"
+								(selected)="onRawdesignSelected($event);"
+								[matchClass]="'match'"
+								[inputClass]="'form-control name'"
+								[textSearching]="'Please wait...'" ></ng2-completer>
+							</div>
+							<div class="col-md-6">
+								   <img src="{{adminorderdetails.prodefaultimg}}"  width="140" height="135">
+							</div> 
+					</div>
+				   </div>
+				   <div class="form-group">
+						<label for="input01">Branch*</label><select class="form-control"
+						name="Branch" [(ngModel)]="adminorderdetails.branchid" required>
+						<option *ngFor="let branch of branches" [value]="branch.id_branch" class="list-group-item">{{branch.name}}</option>
+						</select>
+				   </div>
+			        <div class="form-group">
+						 <label for="qty">Qty*</label>
+						 <input type="text" class="form-control" #qty="ngModel" [(ngModel)]="adminorderdetails.qty" (keypress)="qty_keyPress($event)" name="Qty" required>
+					</div>
+                    <div class="form-group">
+						<label for="input01">Purity*</label><select class="form-control"
+						name="Purity" [(ngModel)]="adminorderdetails.id_purity" required>
+						<option *ngFor="let pur of purities" [value]="pur.id_purity" class="list-group-item">{{pur.purity}}</option>
+						</select>
+				    </div>
+					<div class="form-group">
+					 <label for="options">Size</label><input type="number"
+						class="form-control" #MinWt="ngModel"
+						[(ngModel)]="adminorderdetails.sizeorlen" name="sizeorlen"
+						placeholder="Size">
+			       </div>
+					<div class="form-group">
+						 <label for="options">Weight(Grms)*</label><input type="number"
+							class="form-control" #MinWt="ngModel"
+							[(ngModel)]="adminorderdetails.reqweight" name="reqweight"
+							placeholder="Weight in grms" required>
+				   </div>
+				   <div class="form-group" *ngIf="adminorderdetails.is_chain == 1">
+				    <label for="options">Hook Type</label>
+						   <div class="input-demo radio-demo row">
+								<div class="col-md-4" *ngIf="adminorderdetails.s_hook_type == 1">
+									<input type='radio' name='hook_type' [(ngModel)]="adminorderdetails.hook_type" value="1"/><label>S Type</label>
+							  </div>
+								<div class="col-md-4"  *ngIf="adminorderdetails.m_hook_type == 1">
+									<input type='radio' name='hook_type' [(ngModel)]="adminorderdetails.hook_type" value="2"/><label>M Type</label>
+								</div>
+						   </div>
+			     </div>
+       				<div class="form-group">
+						<label for="input01">karigar</label><select class="form-control"
+						name="id_karigar" [(ngModel)]="adminorderdetails.id_karigar">
+						<option *ngFor="let ven of vendors" [value]="ven.id_karigar" class="list-group-item">{{ven.firstname}}</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						 <label for="options">Remarks</label><input type="tezt"
+						class="form-control" #MinWt="ngModel"
+						[(ngModel)]="adminorderdetails.remarks" name="Remarks"
+						placeholder="Remarks">
+					</div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+     <div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="saveAdminorder(false,false)"
+				[disabled]="!designbomformation.valid" *ngIf="isAddMode">Save & New</button>
+			<button class='btn btn-success' (click)="saveAdminorder(false,true)"
+				[disabled]="!designbomformation.valid" *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect' (click)="saveAdminorder(true,true)"
+				[disabled]="!designbomformation.valid" *ngIf="isEditMode && accessData.edit == 1">Save & Close</button>
+			<button class='btn btn-default' (click)="close()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindModal(editModal) }}
+
+
+
+</div>
+</div>

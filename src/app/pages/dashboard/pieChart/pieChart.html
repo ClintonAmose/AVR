@@ -1,0 +1,123 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to Dashboard , Contact admin to activate.</div></div>
+<div id="backgroundPopup_1" align="center"  *ngIf="records.length==0"><img src="{{loadingPicture}}" alt="Please Wait..." style="margin-top:150px;width:100px;" /></div>	
+<div id="displaying_1" *ngIf="records.length>0">
+<div class="row pie-charts" *ngIf="accessData.view == 1" >
+
+	<ba-card title='New Order' link="#/pages/orderprocess/neworder" 
+		class="pie-chart-item-container col-xlg-3 col-lg-3 col-md-6 col-sm-12 col-12">
+	<div class="pie-chart-item">
+		<div class="chart">
+			<i class="ion-bag"></i>
+		</div>
+		<div class="description" translate>
+			 <div class="description-stats">{{dashboarddata.neworders}}</div>
+		</div>
+	</div>
+	</ba-card> 
+
+	<ba-card title='Ready For Delivery' link="#/pages/orderprocess/deliveryready"
+		class="pie-chart-item-container col-xlg-3 col-lg-3 col-md-6 col-sm-12 col-12">
+	<div class="pie-chart-item1">
+	    <div class="chart">
+			<i class="ion-android-checkbox-outline"></i>
+	    </div>
+		<div class="description" translate>
+		<div class="description-stats">{{dashboarddata.deliveryready}}</div>
+		</div>
+	</div>
+	</ba-card>
+    
+	<ba-card title='Today Delivery' link="#/pages/orderprocess/todaydelivery"
+		class="pie-chart-item-container col-xlg-3 col-lg-3 col-md-6 col-sm-12 col-12">
+	<div class="pie-chart-item1">
+	    <div class="chart">
+			<i class="ion-ios-redo"></i>
+		</div>
+		<div class="description" translate>
+		<div class="description-stats">{{dashboarddata.todaydelivery}}</div>
+		</div>
+	</div>
+	</ba-card>
+	
+	<ba-card title='Pending For Accept' link="#/pages/orderprocess/acceptpending"
+		class="pie-chart-item-container col-xlg-3 col-lg-3 col-md-6 col-sm-12 col-12">
+	<div class="pie-chart-item">
+	    <div class="chart">
+			<i class="ion-alert"></i>
+		</div>
+		<div class="description" translate>
+		<div class="description-stats">{{dashboarddata.pendingacceptence}}</div>
+		</div>
+	</div>
+	</ba-card>
+
+	<ba-card style="display:none;" title='Rejected by Vendor' link="#/pages/orderprocess/vendorreject"
+		class="pie-chart-item-container col-xlg-3 col-lg-3 col-md-6 col-sm-12 col-12">
+	<div class="pie-chart-item1">
+	    <div class="chart">
+			<i class="ion-ios-close-outline"></i>
+		</div>
+		<div class="description" translate><div class="description-stats">{{dashboarddata.venrejectorder}}</div></div>
+	</div>
+	</ba-card>
+
+	<ba-card title='Overdue Order' link="#/pages/orderprocess/overdue"
+		class="pie-chart-item-container col-xlg-3 col-lg-3 col-md-6 col-sm-12 col-12">
+	<div class="pie-chart-item2">
+	     <div class="chart">
+			<i class="ion-ios-ionic-outline"></i>
+		</div>
+		<div class="description" translate>
+		<div class="description-stats">{{dashboarddata.overdue}}</div>
+		</div>
+	</div>
+	</ba-card>
+		
+	<ba-card title='Today Order' link="#/pages/orderprocess/todayorder"
+		class="pie-chart-item-container col-xlg-3 col-lg-3 col-md-6 col-sm-12 col-12">
+	<div class="pie-chart-item2">
+	    <div class="chart">
+			<i class="ion-ios-albums-outline"></i>
+		</div>
+		<div class="description" translate>
+		<div class="description-stats">{{dashboarddata.todayorder}}</div>
+		</div>
+	</div>
+	</ba-card>
+	<ba-card title='Work In Process' link="#/pages/orderprocess/workinprocess"
+		class="pie-chart-item-container col-xlg-3 col-lg-3 col-md-6 col-sm-12 col-12">
+	<div class="pie-chart-item2">
+	    <div class="chart">
+			<i class="ion-ios-compose"></i>
+		</div>
+		<div class="description" translate>
+		<div class="description-stats">{{dashboarddata.workinprocess}}</div>
+		</div>
+	</div>
+	</ba-card>
+	
+	<ba-card title='Delivery Remainder' link="#/pages/orderprocess/deliveryremainder"
+		class="pie-chart-item-container col-xlg-3 col-lg-3 col-md-6 col-sm-12 col-12">
+	<div class="pie-chart-item2">
+	    <div class="chart">
+			<i class="fa fa-bell-o" aria-hidden="true"></i>
+		</div>
+		<div class="description" translate>
+		<div class="description-stats">{{dashboarddata.deliveryremainder}}</div>
+		</div>
+	</div>
+	</ba-card>
+	<ba-card title='Rejected by Admin' link="#/pages/orderprocess/adminreject"
+		class="pie-chart-item-container col-xlg-3 col-lg-3 col-md-6 col-sm-12 col-12">
+	<div class="pie-chart-item">
+	    <div class="chart">
+			<i class="ion-close-circled"></i>
+		</div>
+		<div class="description" translate>
+		<div class="description-stats">{{dashboarddata.adminrejectorder}}</div>
+		</div>
+	</div>
+	</ba-card>
+	
+</div>
+</div>

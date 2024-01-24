@@ -1,0 +1,10 @@
+<div baCardBlur
+	class="animated fadeIn card {{cardType}} {{baCardClass || ''}}" zoom-in>
+	<div *ngIf="title" class="card-header clearfix">
+		<p class="card-title" translate>{{title}}</p>
+		<a *ngIf="link" [attr.href]="link">View <i class="fa fa-arrow-circle-right"></i></a>
+	</div>
+	<div class="card-body">
+		<ng-content></ng-content>
+	</div>
+</div>

@@ -1,0 +1,140 @@
+<div id="backgroundPopup_1" align="center"  *ngIf="records.length==0"><img src="{{loadingPicture}}" alt="Please Wait..." style="margin-top:150px;width:100px;" /></div>	
+<div id="displaying_1" *ngIf="records.length>0">
+<div class="widgets">
+	<div class="row">
+		<ba-card title="Stock Manage List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+	     <div class="row filter-search">
+				<div class="col-sm-3">
+					<input class="form-control"  placeholder='Search ...'  [(ngModel)]="filterQuery" />
+				</div>
+				<div class="col-sm-3">
+				</div>
+				<div class="offset-sm-3 col-sm-3"><a translate (click)="createnewsizedetails()"><button
+						class="btn btn-primary btn-with-icon" type="button">
+						<i class="ion-plus-round"></i>New Stock Manage
+					</button></a>
+				</div>
+			</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th style="width: 10%" class="text-center" ><mfDefaultSorter
+								by="id_stock">Id</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="stock">Stock</mfDefaultSorter></th>
+						<th style="width: 40%" class="text-center"><mfDefaultSorter
+								by="description">Description</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="status">Status</mfDefaultSorter></th>
+						<th style="width: 20%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center">{{item.id_stock}}</td>
+						<td class="text-center">{{item.stock}}</td>
+						<td class="text-center">{{item.description}}</td>
+						<td class="text-center">{{(item.status == 1) ? 'Avaliable' : 'Not Avaliable'}}</td>
+						<td class="text-center">
+							<button (click)="updatestockmanage(item.id_stock)"
+								title="Update Stock Info" class="btn btn-primary btn-icon"
+								type="button">
+								<i class="ion-edit"></i>
+							</button> &nbsp;
+							<button (click)="deletestock(item.id_stock)" title="Delete Stock Manage"
+								class="btn btn-danger ion-trash-a" type="button"></button>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="7"><mfBootstrapPaginator
+								[rowsOnPageSet]="[25,50,75]"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#editModal>
+	<form #sizefrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="input01">Stock Name*</label><input type="text"
+						class="form-control" #SizeName="ngModel" id="stock"
+						[(ngModel)]="stockmanagedet.stock" name="stock"
+						placeholder="Stock Manage" required>
+					 
+				</div>
+				<div class="form-group">
+					<label for="description">Description</label>
+					<textarea class="form-control" id="description"
+						#CatDescription="ngModel" [(ngModel)]="stockmanagedet.description"
+						name="Description" placeholder="Description" required></textarea>
+				</div>
+				<div class="form-group">
+				<label for="input01">Status(Stock)</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="stockmanagedet.status"  name="type"
+								 value="1"><span>Avaliable</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"><input
+								type="radio" [(ngModel)]="stockmanagedet.status" name="type"
+								value="0"><span>Not Avaliable</span>
+							</label>
+						</div>
+					</div>
+				</div> 
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="saveStockManage(false,false)"
+				[disabled]="!sizefrm.valid  || disablesubmit" *ngIf="isAddMode">Save & New</button>
+			<button class='btn btn-success' (click)="saveStockManage(false,true)"
+				[disabled]="!sizefrm.valid  || disablesubmit" *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect' (click)="saveStockManage(true,true)"
+				[disabled]="!sizefrm.valid  || disablesubmit" *ngIf="isEditMode">Save & Close</button>
+			<button class='btn btn-default' (click)="close()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindModal(editModal) }}
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#deleteModal>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group deletemsg">Are you sure, you want to
+				delete this Smsalert?</div>
+		</div>
+	</div>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-danger'
+				(click)="removesms(stockmanagedet.id_services)">Delete</button>
+			<button class='btn btn-default' (click)="closedeletepopup()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ binddeleteModal(deleteModal) }}
+</div>
+</div>

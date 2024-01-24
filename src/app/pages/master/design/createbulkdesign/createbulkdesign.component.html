@@ -1,0 +1,130 @@
+<div class="widgets">
+	<div class="row">
+		<ba-card title="Bulk Design Add List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+		<div class="row filter-search">
+			<div class='col-sm-3'>
+				<input class="form-control" placeholder="Search ..." [(ngModel)]="filterQuery" />
+			</div>
+			<div class="col-sm-3 offset-sm-1">
+				<input type="file" #myInput style="display: inline-block;" (change)="incomingfile($event)" placeholder="Upload file" accept=".xlsx">
+			</div>
+			 <div class="col-sm-3 offset-sm-1">
+                 <button type="button" class="btn btn-info" (click)="Upload()"  [disabled]="disablesubmit">Import</button>
+			</div>
+		</div>
+		<div class="panel panel-default">
+		   <div class="panel-heading">Bulk Design - Excel Import List Format </div><br>
+		   <div class="panel-heading1"><b>*Asterisk - In Excel Field Name Need in Excel Cells Column</b></div>
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th style="width: 20%">Excel Field Name</th>
+						<th style="width: 20%">Description</th>
+					</tr>
+				</thead>
+				<tbody>
+				    <tr>
+					   <td>cus_type*</td>
+					   <td>Customer Type(1 ->Customer 2 ->Refiner)</td>
+					</tr>
+					<tr>
+					   <td>code_design*</td>
+					   <td>Code Of Design(Unique Code Apply)</td>
+					</tr>
+					<tr>
+					   <td>is_chain</td>
+					   <td>Design Format -> 0 - is Not Chain , 1 - is Chain</td>
+					</tr>
+					<tr>
+					   <td>s_hook_type</td>
+					   <td>Design Format ->(is_chain =1) - short type -> 1 - is Short Type , 0 - is Not Short Type</td>
+					</tr>
+					<tr>
+					   <td>m_hook_type</td>
+					   <td>Design Format ->(is_chain =1) - Maximum type -> 1 - is Maximum Type , 0 - is Not Maximum Type</td>
+					</tr>
+					<tr>
+					   <td>login_not_required</td>
+					   <td>Design Shows in App -> 0 - is Not Required , 1 - is Required</td>
+					</tr>
+					<tr>
+					   <td>isnewarrival</td>
+					   <td>New Arrival -> 0 - Is Not Arrival , 1 - Is Arrival</td>
+					</tr>
+					<tr>
+					   <td>expire_date</td>
+					   <td>New Arrival -> (1) is Expire Date</td>
+					</tr>
+					<tr>
+					   <td>category_design*</td>
+					   <td>Category Of Design(Id)</td>
+					</tr>
+					<tr>
+					   <td>subcategory_design*</td>
+					   <td>Subcategory Of Design (Give Category Based Subcategory Id)</td>
+					</tr>
+					<tr>
+					   <td>collection_design*</td>
+					   <td>Collection Of Design(Id)</td>
+					</tr>
+					<tr>
+					   <td>style_design*</td>
+					   <td>Style Of Design(Id)</td>
+					</tr>
+					<tr>
+					   <td>theme_design*</td>
+					   <td>Theme Of Design(Id)</td>
+					</tr>
+					<tr>
+					   <td>default_purity*</td>
+					   <td>Purity(Id)</td>
+					</tr>
+					<tr>
+					   <td>vendor_design</td>
+					   <td>Karigar(Id)</td>
+					</tr>
+					<tr>
+					   <td>vendor_designno</td>
+					   <td>karigar Design No</td>
+					</tr>
+					<tr>
+					   <td>netweight_design*</td>
+					   <td>Design NetWeight</td>
+					</tr>
+					<tr>
+					   <td>minweight_design*</td>
+					   <td>Design Minimum Weight</td>
+					</tr>
+					<tr>
+					   <td>size</td>
+					   <td>Design Size</td>
+					</tr>
+					<tr>
+					   <td>selectcustomer</td>
+					   <td>Design Shows In App -> 1 - Show to all, 0 - Selected Customers</td>
+					</tr>
+				    <tr>
+					   <td>design_expire</td>
+					   <td>Design Expire -> Set Date in Expire Of with Date , Not Set Date is Not Expire Option</td>
+					</tr>
+					<tr>
+					   <td>created_by*</td>
+					   <td>Current Login(admin Id)</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="11"><mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div> 
+		</ba-card>
+	</div>
+ 
+</div>

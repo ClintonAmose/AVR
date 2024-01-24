@@ -1,0 +1,323 @@
+<div class="widgets">
+<form #designfrm="ngForm" novalidate>
+	<div class="row">
+		<div class="col-md-12">
+			<ba-card title="Design Information" baCardClass="with-scroll">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+
+						<label for="input01">Design Name*</label> <input type="text"
+							class="form-control" #DesignName="ngModel"
+							[(ngModel)]="designdet.name_design" name="DesignName" autofocus
+							placeholder="Design Name" required>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+
+						<label for="input01">Design Code* <span class="hint">(Code should be unique)</span></label> <input type="text"
+							class="form-control" #Designcode="ngModel"
+							[(ngModel)]="designdet.code_design" name="Designcode"
+							placeholder="Design Code" required>
+
+					</div>
+				</div>
+			</div>
+			</ba-card>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<ba-card title="Basic Information" baCardClass="with-scroll">
+			
+			<div class="form-group">
+				 <div >
+					<input type='checkbox'
+					 name='LoginNotRequired'
+					 value='login_not_required' [(ngModel)]="designdet.login_not_required" 
+					/>
+					No Login Required
+				 </div>
+			</div>			
+			<div class="form-group">
+				 <!-- <label for="options">*</label> -->
+				 <div >
+					<input type='checkbox'
+					 name='IsChain'
+					 value='isChain' [(ngModel)]="designdet.is_chain" 
+					/>
+					 Is chain
+				 </div>
+			</div>
+			<div class="form-group" *ngIf="designdet.is_chain">
+			   <div class="input-demo radio-demo row">
+					<div class="col-md-4">
+						<input type='checkbox'
+						 name='s_hook_type'
+						 value='designdet.s_hook_type' [(ngModel)]="designdet.s_hook_type" 
+						/> <span>S Type</span>						
+					</div>
+					<div class="col-md-4">
+						<input type='checkbox'
+						 name='m_hook_type'
+						 value='designdet.m_hook_type' [(ngModel)]="designdet.m_hook_type" 
+						/> <span>M Type</span>
+					</div>
+			   </div>
+			</div>
+			<div class="form-group">
+				 <div>
+					<input type='checkbox'
+					 name='isNewarrival'
+					 value='isnewarrival' [(ngModel)]="designdet.isnewarrival"
+					/>
+					 Is New Arrival
+				 </div>
+			</div>			
+			<div class="form-group" *ngIf="designdet.isnewarrival">
+				<label for="input01">Expire Date</label>
+				<my-date-picker class="form-control" name="Expire_Date"
+					#Expire_Date="ngModel" [options]="myDatePickerOptions"
+					[(ngModel)]="designdet.expire"></my-date-picker>
+			</div>
+			<div class="form-group" style='display:none;'>
+				 <div>
+					<input type='checkbox'
+					 name='isQuieckselect'
+					 value='is_quieckselect' [(ngModel)]="designdet.is_quieckselect" 
+					/>
+					 Quieck Select
+				 </div>
+			</div>
+			<div class="form-group">
+				<label for="input01">Category*</label> <select
+							class="form-control" [(ngModel)]="designdet.category_design" name="CategoryName"
+							#CategoryName="ngModel" required placeholder="Select Category" (change)="getAllSubCategory($event.target.value)">
+							<option *ngFor="let cat of categories" [value]="cat.id_category"
+								class="list-group-item">{{cat.name}}</option>
+						</select>
+			</div>
+			<div class="form-group">
+				<label for="input01">Sub Category*</label> <select
+							class="form-control" [(ngModel)]="designdet.subcategory_design" name="SubCategoryName"
+							#SubCategoryName="ngModel" required placeholder="Select Sub Category">
+							<option *ngFor="let scat of subcategories" [value]="scat.id_subcategory"
+								class="list-group-item">{{scat.name}}</option>
+						</select>
+			</div>
+			<div class="form-group">
+				<label for="input01">Collection*</label> <select
+							class="form-control" [(ngModel)]="designdet.collection_design" name="CollectionName"
+							#CollectionName="ngModel" required placeholder="Select Collection">
+							<option *ngFor="let coll of collections" [value]="coll.id_collection"
+								class="list-group-item">{{coll.name_collection}}</option>
+						</select>
+			</div>
+			<div class="form-group">
+				<label for="input01">Style*</label> <select
+							class="form-control" [(ngModel)]="designdet.style_design" name="StyleName"
+							#StyleName="ngModel" required placeholder="Select Style">
+							<option *ngFor="let sty of styles" [value]="sty.id_style"
+								class="list-group-item">{{sty.name_style}}</option>
+						</select>
+			</div>
+			<div class="form-group">
+				<label for="input01">Theme*</label> <select
+							class="form-control" [(ngModel)]="designdet.theme_design" name="ThemeName"
+							#ThemeName="ngModel" required placeholder="Select Theme">
+							<option *ngFor="let thm of themes" [value]="thm.id_theme"
+								class="list-group-item">{{thm.name_theme}}</option>
+						</select>
+			</div>
+			
+			<div class="form-group" style="display:none;">
+				 <label for="options">Purity*</label> 
+				 <div *ngFor='let purity of purities'> 
+				    <div *ngIf="!designdet.is_quieckselect">
+					<input type='checkbox'
+					 name='purities'
+					 value='{{purity.id_purity}}'
+					 (change)='selPurity(purity.id_purity,$event.target.checked )'
+					/>
+	               {{purity.purity}}
+				   </div>
+				</div>
+			</div>
+			<div class="form-group">
+			         <label for="options">Purity*</label> 
+			          <select class="form-control" [(ngModel)]="designdet.default_purity" 
+						 name="default_purity" placeholder="Select Purity">
+					  <option  *ngFor='let purity of purities' [value]="purity.id_purity" class="list-group-item">{{purity.purity}}</option>
+					  </select>
+			</div>
+			</ba-card>
+		</div>
+		<div class="col-md-6">
+			<ba-card title="Karigar Information" baCardClass="with-scroll">
+			 <div class="form-group">
+				<label for="input01">Karigar Name</label> 
+				<select
+					class="form-control" [(ngModel)]="designdet.vendor_design" name="VendorName"
+					#VendorName="ngModel" placeholder="Select Karigar">
+					<option *ngFor="let ven of vendors" [value]="ven.id_karigar"
+						class="list-group-item">{{ven.firstname}}</option>
+				</select>
+			</div> 
+			<div class="form-group">
+				<label for="input01">Karigar Design no.</label>
+				 <input type="text"
+							class="form-control" #VendorDesigncode="ngModel"
+							[(ngModel)]="designdet.vendor_designno" name="VendorDesigncode"
+							placeholder="Karigar Design Code" >
+			</div>
+			
+			<!-- <div class="panel panel-default">
+			
+				<table class="table table-striped" >
+					<thead>
+						<tr>
+							<th class="text-center" style="width: 46%">Karigar Name</th>
+							<th class="text-center" style="width: 50%">	Karigar Design No</th>
+							<th class="text-center" style="width: 4%">Primary Karigar</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let ven of vendors; let i = index">
+							<td >
+								<input type='checkbox'
+								 name='vendor'
+								 value='{{ven.id_karigar}}'
+								 (change)='selKarigar(ven.id_karigar,$event.target.checked)'/> 
+								{{ven.firstname}}
+							</td>
+							<td >								
+								<input type="text"
+								class="form-control" #VendorDesigncode="ngModel"
+								[(ngModel)]="ven.vendor_designno" name="VendorDesigncode" 
+								placeholder="Vendor Design Code" required >							
+							</td>
+							<td>
+							     <label class="radio-inline custom-radio nowrap"> <input
+									type="radio" [(ngModel)]="ven.is_primary_karigar" name="is_primary_karigar"
+									 value="1"> <span>Active</span>
+								</label> 
+							<br/>
+						</tr>
+					</tbody>
+				</table>
+			</div> -->
+		
+			<div class="form-group">
+				<label for="input01">Net Weight(Grms)*</label>
+				 <input type="number" step="0.01"
+							class="form-control" #NetWt="ngModel"
+							[(ngModel)]="designdet.netweight_design" name="NetWt"
+							placeholder="Net Weight in grms" required>
+			</div>
+			<div class="form-group">
+				 <label for="options">Min weight(Grms)*</label>
+				 <input type="number" step="0.01"
+					class="form-control" #MinWt="ngModel"
+					[(ngModel)]="designdet.minweight_design" name="MinWt"
+					placeholder="Min Weight in grms" required>
+			</div>	
+			<div class="form-group">
+				 <label for="options">Size</label>
+				 <input type="number" step="1"
+					class="form-control" #MinWt="ngModel"
+					[(ngModel)]="designdet.size" name="Size"
+					placeholder="Size">
+			</div>
+			 <div class="form-group">
+					<label for="input01">Show For</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="designdet.selectcustomer" name="selectcustomer"
+								id="all" value="1"> <span>All</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="designdet.selectcustomer" name="selectcustomer"
+								id="Individual" value="0"> <span>Selected Customer</span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					  <label for="input01">Design Expire Date</label>
+						 <angular2-date-picker class="form-control" (onDateSelect)="onDateSelect($event)"  style="height:50px;" name="design_expire" #design_expire="ngModel" [settings]="settings" [(ngModel)]="expire_designdate" ></angular2-date-picker>
+			      </div>
+				  <div class="form-group">
+					<label for="input01">Stock Add</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="designdet.is_stock" name="selectcustomer"
+								id="all" value="1"> <span>Yes</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="designdet.is_stock" name="selectcustomer"
+								id="Individual" value="0"> <span>No</span>
+							</label>
+						</div>
+					</div>
+				</div>
+			</ba-card>
+		</div>
+		
+	</div>
+	 <div class="row" *ngIf="designdet.is_stock==1">
+		<div class="col-md-12">
+			<ba-card title="Stock Information" baCardClass="with-scroll">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+                          <label for="input01">Branch*</label>
+                           <select class="form-control" [(ngModel)]="stockdet.id_branch" name="id_branch" #id_branch="ngModel" placeholder="Select Branch">
+						   <option *ngFor="let brach of branches" [value]="brach.id_branch"
+							class="list-group-item">{{brach.name}}</option>
+				         </select>						  
+					</div>
+					<div class="form-group">
+					<label for="input01">Karigar</label> 
+					<select
+						class="form-control" [(ngModel)]="stockdet.id_karigar" name="id_karigar"
+						#id_karigar="ngModel" placeholder="Select Karigar">
+						<option *ngFor="let ven of vendors" [value]="ven.id_karigar"
+							class="list-group-item">{{ven.firstname}}</option>
+					</select>
+				  </div> 
+				</div>
+				<div class="col-md-6"> 
+					<div class="form-group">
+						<label for="input01">Qty*</label> <input type="text"
+							class="form-control" #Designcode="ngModel"
+							[(ngModel)]="stockdet.qty" name="Designcode"
+							placeholder="Enter Stock Qty" required>
+
+					</div>
+					<div class="form-group">
+						<label for="input01">Remarks</label><input type="text"
+							class="form-control" #remarks="ngModel"
+							[(ngModel)]="stockdet.remarks" name="remarks"
+							placeholder="Enter Remarks Here.." required>
+
+					</div>
+				</div>
+			</div>
+			</ba-card>
+		</div>
+	</div>
+</form>
+<div class="mfoot">
+		<div class="offset-sm-4 col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="saveDesigndetails()" [disabled]="!designfrm.valid  || disablesubmit">Save</button>
+			<button class='btn btn-warning btn-with-icon' (click)="btnCloseDesign()">Close</button>
+		</div>
+	</div>
+</div>

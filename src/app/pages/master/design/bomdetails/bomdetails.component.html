@@ -1,0 +1,230 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<div class="widgets" *ngIf="accessData.view == 1">
+	<div class="row">
+		<ba-card title="BOM List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+		<div class="row filter-search">
+			<div class='col-sm-3'>
+				<input class="form-control" placeholder="Search ..." [(ngModel)]="filterQuery" />
+			</div>
+			<div class='col-sm-3'></div>
+			<div class="offset-sm-3 col-sm-3" *ngIf="accessData.add == 1"><a translate (click)="createnewbomdetails(designid)"><button
+						class="btn btn-primary btn-with-icon" type="button">
+						<i class="ion-plus-round"></i>New Bom
+					</button></a>
+				</div>
+		</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="bomdetails | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" >
+				<thead>
+					<tr>
+						<th style="width: 10%">L.Type</th>
+						<th style="width: 15%">Raw Item</th>
+						<th style="width: 10%">Semi Finished</th>
+						<th style="width: 15%">Finished</th>
+						<th style="width: 5%">Category</th>
+						<th class="text-center" style="width: 5%">Purity</th>
+						<th class="text-center" style="width: 5%">No.of St</th>
+						<th class="text-center" style="width: 4%">Net.Wt</th>
+						<th style="width: 5%">Primary</th>
+						<th style="width: 5%;">Die Number</th>
+						<th class="text-center" style="width: 17%">Option</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let bom of bomdetails">
+						<td>{{bom.linetypename}}</td>
+						<td>{{bom.rawitem_name}}</td>
+						<td>{{bom.semifinishitem_name}}</td>
+						<td>{{bom.finishitem_name}}</td>
+						<td>{{ bom.category }}</td>
+						<td class="text-center" >{{bom.linetype_bom !=4 ? bom.purityname :''}}</td>
+						<td class="text-center" >{{bom.linetype_bom !=4 ? bom.noofstone :''}}</td>
+						<td class="text-center" >{{bom.linetype_bom !=4 ? bom.netweight :''}}</td>
+						<td>{{ bom.primaryitem == 1 ? 'Yes' : 'No' }}</td>
+						<td>{{bom.linetype_bom ==4 ? bom.dierefnumber:'' }}</td>
+						<td class="text-center"><button
+								class="btn btn-primary btn-icon" type="button"
+								(click)="editbom(bom)" title="Edit BOM">
+								<i class="ion-edit"></i>
+							</button> &nbsp;
+							<button (click)="deletebom(bom.id_bom)"
+								class="btn btn-danger btn-icon" type="button" *ngIf="accessData.delete == 1"
+								title="Delete BOM">
+								<i class="ion-trash-a"></i>
+							</button></td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="11"><mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+     
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#editModal>
+	<form #designbomformation="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+			    <div class="form-group">
+					<label for="input01">Line Type</label><select class="form-control" 
+					name="linetype_bom" [(ngModel)]="bomdatadetails.linetype_bom" required>
+					<option *ngFor="let line of BOMLines" [value]="line.id_bomlinetype" class="list-group-item">{{line.name_bomlinetype}}</option>
+					</select>
+				</div>
+				<div *ngIf="bomdatadetails.linetype_bom != '4'">
+				<div class="form-group">
+					<label for="input01">Raw Item</label>
+					<ng2-completer #remoteDataExample name="rawitem_name"
+					class="completer-limit" [(ngModel)]="bomdatadetails.rawitem_name"
+					[datasource]="itemsRemote" [minSearchLength]="3"
+				    [placeholder]="'Search for item'"
+					(selected)="onRawItemSelected($event)" 
+					[matchClass]="'match'"
+					[inputClass]="'form-control rawitem_name'"
+				    [textSearching]="'Please wait...'" [required]="bomdatadetails.linetype_bom != 4"></ng2-completer>
+				</div>
+				<div class="form-group">
+					<label for="input01">Semi Finished Item</label>
+					<ng2-completer #remoteDataExample name="semifinishitem_name"
+					class="completer-limit" [(ngModel)]="bomdatadetails.semifinishitem_name"
+					[datasource]="semifinishitemsRemote" [minSearchLength]="3"
+				    [placeholder]="'Search for item'"
+					(selected)="onSemiFinishedSelected($event)" 
+					[matchClass]="'match'"
+					[inputClass]="'form-control semifinishitem_name'"
+				    [textSearching]="'Please wait...'"></ng2-completer>
+				</div>
+				<div class="form-group">
+					<label for="input01">Finished Item</label>
+					<ng2-completer #remoteDataExample name="finishitem_name"
+					class="completer-limit" [(ngModel)]="bomdatadetails.finishitem_name"
+					[datasource]="finisheditemsRemote" [minSearchLength]="3"
+				    [placeholder]="'Search for item'"
+					(selected)="onFinishedSelected($event)" 
+					[matchClass]="'match'"
+					[inputClass]="'form-control finishitem_name'"
+				    [textSearching]="'Please wait...'"></ng2-completer>
+				</div>
+			    <div class="form-group">
+					<label for="input01">Category</label><select
+						class="form-control" [(ngModel)]="bomdatadetails.item_category" name="temcategory"
+						#BomName="ngModel"  placeholder="Select Category" required>
+						<option *ngFor="let citm of itemcategories"
+						[value]="citm.id_itemcategory" class="list-group-item">{{citm.name_itemcategory}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="input01">Purity</label><select
+						class="form-control" [(ngModel)]="bomdatadetails.purity" name="purity"
+						#BomName="ngModel" required placeholder="Select Purity" required>
+						<option *ngFor="let pur of purities" [value]="pur.id_purity"
+							class="list-group-item">{{pur.purity}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="input01">Number Of Stone*</label>
+					<input type="text" class="form-control"
+					#BomName="ngModel"	name="noofstones" [(ngModel)]="bomdatadetails.noofstone"
+					placeholder="No.of.St" [required]="bomdatadetails.linetype_bom != 4"> 
+				</div>
+				<div class="form-group">
+					<label for="input01">Net Weight*</label>
+					<input type="text" class="form-control"
+						name="netweight" [(ngModel)]="bomdatadetails.netweight"
+						placeholder="Net Wt." [required]="bomdatadetails.linetype_bom != 4">
+				</div>
+		         <!-- <div class="form-group">
+					<label for="input01">Primary*</label>
+				    <input type="checkbox" [value]="bomdatadetails.primaryitem"
+					[checked]="bomdatadetails.primaryitem" (change)="$event.target.checked ? bomdatadetails.primaryitem = true : bomdatadetails.primaryitem = false"> 
+				</div> -->
+				<div class="form-group">
+				<label for="input01">Primary</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="bomdatadetails.primaryitem"  name="primaryitem"
+								 value="1"><span>Yes</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"><input
+								type="radio" [(ngModel)]="bomdatadetails.primaryitem" name="primaryitem"
+								value="0"><span>No</span>
+							</label>
+						</div>
+					</div>
+				</div>
+				</div>
+				<div *ngIf="bomdatadetails.linetype_bom == '4'">
+					<div class="form-group">
+						<label for="input01">Die Number</label>
+						<!--  <input type="text" class="form-control"
+						#BomName="ngModel"	name="noofstones" [(ngModel)]="bomdatadetails.dienumber"
+						placeholder="Die Number" required> -->
+						<ng2-completer #remoteDieData name="dienumber"
+						class="completer-limit" [(ngModel)]="bomdatadetails.dierefnumber"
+						[datasource]="dieRemote" [minSearchLength]="3"
+					    [placeholder]="'Search for die no'"
+						(selected)="onDieSelected($event)" 
+						[matchClass]="'match'"
+						[inputClass]="'form-control rawitem_name'"
+					    [textSearching]="'Please wait...'" [required]="bomdatadetails.linetype_bom == 4"></ng2-completer>
+					</div>
+					<div class="form-group">
+						<label for="input01">Qty*</label>
+						<input type="number" class="form-control"
+							name="qty" [(ngModel)]="bomdatadetails.qty"
+							placeholder="Number of qty." [required]="bomdatadetails.linetype_bom == 4">
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="saveBom(false,false)"
+				[disabled]="!designbomformation.valid" *ngIf="isAddMode">Save & New</button>
+			<button class='btn btn-success' (click)="saveBom(false,true)"
+				[disabled]="!designbomformation.valid" *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect' (click)="saveBom(true,true)"
+				[disabled]="!designbomformation.valid" *ngIf="isEditMode && accessData.edit == 1">Save & Close</button>
+			<button class='btn btn-default' (click)="close()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindModal(editModal) }}
+	
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#deleteModal>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group deletemsg">Are you sure, you want to
+				delete this Design Bom Detalis?</div>
+		</div>
+	</div>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-danger'
+				(click)="removebom(currentbomid)">Delete</button>
+			<button class='btn btn-default' (click)="closedeletepopup()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ binddeleteModal(deleteModal) }}
+</div>

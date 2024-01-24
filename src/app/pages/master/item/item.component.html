@@ -1,0 +1,220 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<!-- <div id="backgroundPopup_1" align="center"  *ngIf="records.length==0"><img src="{{loadingPicture}}" alt="Please Wait..." style="margin-top:150px;width:100px;" /></div>	 -->
+<div id="displaying_1">
+<div class="widgets" *ngIf="accessData.view == 1">
+	<div class="row">
+		<ba-card title="Item List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+						<div class="row filter-search">
+						<div class='col-sm-3'>
+							<input class="form-control" placeholder='Search ...' [(ngModel)]="filterQuery" />
+						</div>
+						<div class='col-sm-3'>
+						</div>
+						<div class="col-sm-3 offset-sm-3" *ngIf="accessData.add == 1">
+				        <button class="btn btn-primary btn-with-icon" type="button"
+					    (click)="newItem(1,0)">
+					     <i class="ion-plus-round"></i>New Item
+				         </button>
+			             </div>
+					   </div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" 
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th style="width: 10%" class="text-center" ><mfDefaultSorter
+								by="id_item">Id</mfDefaultSorter></th>
+						<th style="width: 30%" ><mfDefaultSorter
+								by="name_item">Name</mfDefaultSorter></th>
+						<th style="width: 30%" ><mfDefaultSorter
+								by="code_item">Code</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="status">Status</mfDefaultSorter></th>
+						<th style="width: 20%" class="text-center" >Option</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center">{{item.id_item}}</td>
+						<td>{{item.name_item}}</td>
+						<td >{{item.code_item}}</td>
+						<td class="text-center">{{ (item.status == 1) ? 'Active' :
+							'In Active'}}</td>
+						<td class="text-center"><button 
+								class="btn btn-primary btn-icon" type="button"
+								(click)="newItem(2,item.id_item)">
+								<i class="ion-edit"></i>
+							</button> &nbsp;&nbsp;
+							<!-- <button (click)="imageItem(item.id_item)"
+								class="btn btn-primary btn-icon" type="button">
+								<i class="fa fa-file-image-o"></i>
+							</button> &nbsp;&nbsp; -->
+							<button (click)="deleteItem(item.id_item)"  *ngIf="accessData.delete == 1"
+								class="btn btn-danger ion-trash-a"></button></td>
+
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="5"><mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#editModal>
+	<form #itemfrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="input01">Type</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="itemdet.subtype_item" name="Subtype"
+								id="active" value="0"> <span>Product</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="itemdet.subtype_item" name="Subtype"
+								id="inactive" value="1"> <span>Product Master</span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group" *ngIf="itemdet.subtype_item == '0'">
+					<label for="input01">Select Category*</label> <select
+						class="form-control" [(ngModel)]="itemdet.category_item"
+						name="pcategory" #pcategory="ngModel"
+						(change)="getAllSubCategory($event.target.value)" required>
+						<option *ngFor="let cate of categories" [value]="cate.id_category"
+							class="list-group-item">{{cate.name}}</option>
+					</select>
+				</div>
+				<div class="form-group" *ngIf="itemdet.subtype_item == '0'">
+					<label for="input01">Select Sub Category*</label> <select
+						class="form-control" [(ngModel)]="itemdet.subcategory_item"
+						name="psubcategory" #psubcategory="ngModel" required>
+						<option *ngFor="let scate of subcategories"
+							[value]="scate.id_subcategory" class="list-group-item">{{scate.name}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="input01">Item Name* </label> <input type="text"
+						class="form-control" #ItemName="ngModel"
+						[(ngModel)]="itemdet.name_item" name="ItemName" 
+						placeholder="Item Name" required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Item Code* <span class="hint"> (Code should be unique)</span></label> <input type="text"
+						class="form-control" #ItemCode="ngModel"
+						[(ngModel)]="itemdet.code_item" name="ItemCode"
+						placeholder="Item Code" required>
+				</div>
+				<div class="form-group">
+					<label for="description">Search Name</label> <input type="text"
+						class="form-control" #SearchName="ngModel"
+						[(ngModel)]="itemdet.searchname_item" name="SearchName"
+						placeholder="Search Name" required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Select Item Type*</label> <select
+						class="form-control" [(ngModel)]="itemdet.item_type"
+						name="itemType" #itemType="ngModel" required>
+						<option *ngFor="let item of itemtypes"
+							[value]="item.id_itemtype" class="list-group-item">{{item.name_itemtype}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="input01">Select Product Type*</label> <select
+						class="form-control" [(ngModel)]="itemdet.product_type"
+						name="productType" #productType="ngModel" required>
+						<option *ngFor="let item of producttypes"
+							[value]="item.id_producttype" class="list-group-item">{{item.name_producttype}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="input01">Select Production Type*</label> <select
+						class="form-control" [(ngModel)]="itemdet.production_type"
+						name="productionType" #productionType="ngModel" required>
+						<option *ngFor="let prod of productiontype"
+							[value]="prod.productionid" class="list-group-item">{{prod.productionname}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="input01">Select Category Type*</label> 
+					 <select
+						class="form-control" [(ngModel)]="itemdet.itemcol_category"
+						name="itemcolCategory" #itemcolCategory="ngModel" required>
+						<option *ngFor="let icat of itemcategories"
+							[value]="icat.id_itemcategory" class="list-group-item">{{icat.name_itemcategory}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="input01">Status</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="itemdet.status" name="status"
+								id="active" value="1"> <span>Active</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="itemdet.status" name="status"
+								id="inactive" value="0"> <span>Inactive</span>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="saveItem(false,false)"
+				[disabled]="!itemfrm.valid || disablesubmit" *ngIf="isAddMode">Save & New</button>
+			<button class='btn btn-success' (click)="saveItem(false,true)"
+				[disabled]="!itemfrm.valid || disablesubmit" *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect' (click)="saveItem(true,true)" 
+				[disabled]="!itemfrm.valid || disablesubmit" *ngIf="isEditMode && accessData.edit == 1">Save & Close</button>
+			<button class='btn btn-default' (click)="close()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindModal(editModal) }}
+
+
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#deleteModal>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group deletemsg">Are you sure, you want to
+				delete this item?</div>
+		</div>
+	</div>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-danger' (click)="removeItem(itemdet.id_item)">Delete</button>
+			<button class='btn btn-default' (click)="closedeletepopup()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ binddeleteModal(deleteModal) }}
+</div>
+</div>

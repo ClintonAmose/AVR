@@ -1,0 +1,189 @@
+<div class="widgets">
+	<div class="row">
+		<ba-card title="Rate List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+	     <div class="row filter-search">
+				<div class="col-sm-3">
+					<input class="form-control" [(ngModel)]="filterQuery" />
+				</div>
+				<div class="col-sm-3">
+				</div>
+				<div class="offset-sm-3 col-sm-3"><a translate (click)="createnewratedetails()"><button
+						class="btn btn-primary btn-with-icon" type="button">
+						<i class="ion-plus-round"></i>New Rate
+					</button></a>
+				</div>
+			</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th style="width: 5%" class="text-center">ID</th>
+						<th style="width: 20%" class="text-center"><mfDefaultSorter
+								by="name_size">Date</mfDefaultSorter></th>
+						 <th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="name_size">Branch</mfDefaultSorter></th>
+						 <th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="name_size">Item</mfDefaultSorter></th>
+						 <th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="name_size">Purity</mfDefaultSorter></th>
+						 <th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="name_size">Rate</mfDefaultSorter></th>
+						 <th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="status">Base Rate</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="status">Type</mfDefaultSorter></th>
+						<th style="width: 15%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center">{{item.id_rate}}</td>
+						<td class="text-center">{{item.ratedate}}</td>
+						<td class="text-center">{{item.branchname}}</td>
+						<td class="text-center">{{item.itemname}}</td>
+						<td class="text-center">{{item.purityname}}</td>
+						<td class="text-center">{{item.rate}}</td>
+						<td class="text-center">{{(item.baserate == 1) ? 'Yes' : 'No'}}</td>
+						<td class="text-center">{{(item.ratetype == 1) ? 'Purchase' : 'Sales'}}</td>
+						<td class="text-center">
+							<button (click)="updaterate(item.id_rate)"
+								title="Update Rate Info" class="btn btn-primary btn-icon"
+								type="button">
+								<i class="ion-edit"></i>
+							</button> &nbsp;
+							<button (click)="deleterate(item.id_rate)" title="Delete Rate"
+								class="btn btn-danger ion-trash-a" type="button"></button>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="9"><mfBootstrapPaginator
+								[rowsOnPageSet]="[100,200,300]"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#editModal>
+	<form #ratefrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+			   <div class="form-group">
+			        <label for="input01">Rate Date</label>
+					<my-date-picker class="form-control" name="ratedate"
+					#Date_of_Birth="ngModel" [options]="myDatePickerOptions"
+					[(ngModel)]="ratemaster.ratedate"></my-date-picker> 
+				</div>
+				<div class="form-group">
+				<label for="input01">Base Rate</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"><input
+								type="radio" [(ngModel)]="ratemaster.baserate"  name="baserate"
+								 value="1"><span>Yes</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"><input
+								type="radio" [(ngModel)]="ratemaster.baserate" name="baserate"
+								value="0"><span>No</span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="input01">Purity</label><select
+						class="form-control" [(ngModel)]="ratemaster.purity" name="purity"
+						#department="ngModel" required placeholder="Select Purity">
+						<option *ngFor="let purity of purities" [value]="purity.id_purity"
+							class="list-group-item">{{purity.purity}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="input01">Branch</label><select
+						class="form-control" [(ngModel)]="ratemaster.branch" name="branch"
+						#department="ngModel" required placeholder="Select Branch">
+						<option *ngFor="let branch of branchies" [value]="branch.id_branch"
+							class="list-group-item">{{branch.name}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="input01">Item</label><select
+						class="form-control" [(ngModel)]="ratemaster.item" name="item"
+						#department="ngModel" required placeholder="Select Branch">
+						<option *ngFor="let item of items" [value]="item.id_itemtype"
+							class="list-group-item">{{item.name_itemtype}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="input01">Rate*</label><input type="text"
+						class="form-control" #SizeName="ngModel" id="rate"
+						[(ngModel)]="ratemaster.rate" name="rate"
+						placeholder="Rate" required>
+				</div>
+				<div class="form-group">
+				<label for="input01">Rate Type</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"><input
+								type="radio" [(ngModel)]="ratemaster.ratetype"  name="ratetype"
+								 value="1"><span>Purchase</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"><input
+								type="radio" [(ngModel)]="ratemaster.ratetype" name="ratetype"
+								value="0"><span>Sales</span>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="saveRate(false,false)"
+				[disabled]="!ratefrm.valid" *ngIf="isAddMode">Save & New</button>
+			<button class='btn btn-success' (click)="saveRate(false,true)"
+				[disabled]="!ratefrm.valid" *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect' (click)="saveRate(true,true)"
+				[disabled]="!ratefrm.valid" *ngIf="isEditMode">Save & Close</button>
+			<button class='btn btn-default' (click)="close()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindModal(editModal) }}
+	
+		<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#deleteModal>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group deletemsg">Are you sure, you want to
+				delete this Rate Detalis?</div>
+		</div>
+	</div>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-danger'
+				(click)="removerate(ratemaster.id_rate)">Delete</button>
+			<button class='btn btn-default' (click)="closedeletepopup()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ binddeleteModal(deleteModal) }}
+</div>

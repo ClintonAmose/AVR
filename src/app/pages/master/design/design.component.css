@@ -1,0 +1,79 @@
+:host /deep/ { .handsontable { tr:first-childth, tr :first-childtd {
+	    	border-top : 1pxsolidrgba(255, 255, 255, 0.3)!important;
+	
+}
+
+th:first-child, th:nth-child(2), td:first-of-type, .htNoFrame+th,
+	.htNoFrame+td {
+	border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+td, th {
+	border-right: 1px solid rgba(255, 255, 255, 0.3) !important;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+	background-color: transparent !important;
+	color: #fff;
+}
+
+}
+}
+label{
+	font-weight:bold;
+}
+.text-small{
+	    font-size: small !important;
+}
+.modal {
+	padding-top: 300px;
+	.
+	modal-content
+	{
+	color
+	:
+	#000000
+	!important;
+	.
+	modal-header
+	{
+	border
+	:
+	1px
+	solid;
+}
+
+.modal-body {
+	color: #000000 !important;
+}
+
+.modal-footer {
+	border: none;
+}
+
+.close {
+	outline: none;
+}
+
+}
+}
+.modal-buttons .btn {
+	margin-right: 20px;
+}
+
+.uploadfilelbl {
+	color: #FFF !important;
+}
+
+.progress .label {
+	color: #FFF !important;
+}
+
+.deletemsg {
+	color: #FFF !important;
+}
+.image-table{
+	color:#FFF !important;
+}
+.hint{
+	    font-size: small !important;
+		color:#e0ef74 !important;
+}

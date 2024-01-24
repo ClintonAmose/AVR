@@ -1,0 +1,129 @@
+:host /deep/ { .handsontable { tr:first-childth, tr :first-childtd {
+	    	border-top : 1pxsolidrgba(255, 255, 255, 0.3)!important;
+	
+}
+
+th:first-child, th:nth-child(2), td:first-of-type, .htNoFrame+th,
+	.htNoFrame+td {
+	border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+td, th {
+	border-right: 1px solid rgba(255, 255, 255, 0.3) !important;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+	background-color: transparent !important;
+	color: #fff;
+}
+
+}
+}
+.modal {
+	padding-top: 300px;
+	.
+	modal-content
+	{
+	color
+	:
+	#000000
+	!important;
+	.
+	modal-header
+	{
+	border
+	:
+	1px
+	solid;
+}
+
+.modal-body {
+	color: #000000 !important;
+}
+
+.modal-footer {
+	border: none;
+}
+
+.close {
+	outline: none;
+}
+
+}
+}
+.modal-buttons .btn {
+	margin-right: 20px;
+}
+
+.uploadfilelbl {
+	color: #FFF !important;
+}
+
+.progress .label {
+	color: #FFF !important;
+}
+
+.deletemsg {
+	color: #FFF !important;
+}
+.image-table{
+	color:#FFF !important;
+}
+.card.with-scroll .card-body{
+	height:100% !important;
+}
+h1 {
+  margin: 1em 0 .5em;
+
+}
+
+h3 {
+  color: #444;
+  border-bottom: 1px solid #efefef;
+  margin: 3em 0 1em;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.card-block {
+  background-color: #f7f5f2;
+}
+
+:host {
+  padding: 5em 0;
+}
+
+:host /deep/ .match {
+  color: darkred;
+}
+
+.completer-limit /deep/ .completer-dropdown {
+  overflow-y: auto;
+  max-height: 20rem;
+}
+
+.chevron {
+  padding-top: 40%;
+}
+
+.chevron-holder {
+  position: absolute;
+  height: 100%;
+  border: 1px solid rgba(0,0,0,.15);
+  border-top-color: rgba(0, 0, 0, 0.14902);
+  background-color: white;
+  border-radius: 25%;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  border-left: 0;
+}
+
+.chevron-holder.dropdown-open {
+  border-color: #5cb3fd;
+}
+
+.with-chevron /deep/ .completer-input {
+  border-right: 0;
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+}

@@ -1,0 +1,140 @@
+<div class="widgets">
+	<div class="row">
+		<ba-card title="Clarity List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+		<div class="row filter-search">
+			<div class="col-sm-3">
+	               <input class="form-control" placeholder='Search ...' [(ngModel)]="filterQuery" />
+			</div>
+			<div class="col-sm-3">
+		    </div>
+			<div class="offset-sm-3 col-sm-3">
+				<a translate (click)="createnewclaritydetails()"><button
+						class="btn btn-primary btn-with-icon" type="button">
+						<i class="ion-plus-round"></i>New Clarity
+					</button></a>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th style="width: 10%" ><mfDefaultSorter
+								by="id_clarity">Id</mfDefaultSorter></th>
+						<th style="width: 30%" ><mfDefaultSorter
+								by="clarity">Clarity Name</mfDefaultSorter></th>
+						<th style="width: 30%" class="text-center"><mfDefaultSorter
+								by="status">Status</mfDefaultSorter></th>
+						<th style="width: 30%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center">{{item.id_clarity}}</td>
+						<td>{{item.clarity}}</td>
+						<td class="text-center">{{ (item.status == 1) ? 'Active' : 'In Active'}}</td>
+						<td class="text-center">
+							<button (click)="updateclarity(item.id_clarity)"
+								title="Update Clarity Info" class="btn btn-primary btn-icon"
+								type="button">
+								<i class="ion-edit"></i>
+							</button> &nbsp;
+							<button (click)="deleteclarity(item.id_clarity)" title="Delete Clarity"
+								class="btn btn-danger ion-trash-a" type="button"></button>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="4"><mfBootstrapPaginator
+								[rowsOnPageSet]="[25,50,75]"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+
+
+
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#editModal>
+	<form #deptfrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="input01">Clarity Name* <span class="hint"> (Name should be unique)</span></label> <input type="text"
+						class="form-control" #ClarityName="ngModel"
+						[(ngModel)]="claritydet.clarity" name="ClarityName" autofocus
+						placeholder="Clarity Name" required>
+				</div>
+				<div class="form-group">
+					<label for="description">Description</label>
+					<textarea class="form-control" id="description"
+						#CatDescription="ngModel" [(ngModel)]="claritydet.description"
+						name="CatDescription" placeholder="Clarity Description"></textarea>
+				</div>
+
+				<div class="form-group">
+					<label for="input01">Status</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="claritydet.status" name="status"
+								id="active" value="1"> <span>Active</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="claritydet.status" name="status"
+								id="inactive" value="0"> <span>Inactive</span>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="saveClarity(false,false)"
+				[disabled]="!deptfrm.valid || disablesubmit" *ngIf="isAddMode">Save & New</button>
+			<button class='btn btn-success' (click)="saveClarity(false,true)"
+				[disabled]="!deptfrm.valid || disablesubmit" *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect' (click)="saveClarity(true,true)"
+				[disabled]="!deptfrm.valid || disablesubmit" *ngIf="isEditMode">Save & Close</button>
+			<button class='btn btn-default' (click)="close()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindModal(editModal) }}
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#deleteModal>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group deletemsg">Are you sure, you want to
+				delete this clarity?</div>
+		</div>
+	</div>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-danger'
+				(click)="removeClarity(claritydet.id_clarity)">Delete</button>
+			<button class='btn btn-default' (click)="closedeletepopup()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ binddeleteModal(deleteModal) }}
+
+
+</div>

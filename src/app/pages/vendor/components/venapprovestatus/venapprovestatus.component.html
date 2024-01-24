@@ -1,0 +1,289 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<div id="backgroundPopup_1" align="center"  *ngIf="records.length==0"><img src="{{loadingPicture}}" alt="Please Wait..." style="margin-top:150px;width:100px;" /></div>	
+<div id="displaying_1" *ngIf="records.length>0">
+<div class="widgets" *ngIf="accessData.view == 1">
+    <div class="row">
+		            <div class='col-sm-3'>
+			        </div>
+					<label>From:</label>
+					<div class='col-sm-2'>
+					<my-date-picker  name="from_day"
+							#overdue="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="filter_records.from_day"></my-date-picker>
+		           </div>
+				    <label>To:</label>
+				    <div class='col-sm-2'>
+				      <my-date-picker  name="last_day" 
+							#overdue="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="filter_records.last_day"></my-date-picker>
+				  </div>
+				  <label><button (click)="getfilter_data()" class="btn btn-success btn-with-icon" type="button"><i class="fa fa-search"></i></button></label>
+	 </div> 
+	<div class="row">
+		<ba-card title="Vendor Order Work Status Details"
+			baCardClass="with-scroll" class="data-table-container">
+		<div class="row filter-search">
+		   <div class='col-sm-3'>    
+			     <div class="text-right">
+							<select class="form-control input-sm"
+								[(ngModel)]="assignorder" name="assignorder" #Assignorder="ngModel"
+								required placeholder="Select Branch">
+								<option value=""> - Order Status - </option>
+								<option [value]="1">Accept</option>
+								<option [value]="2">Reject</option>
+								<option [value]="3">Update OrderDate</option>
+								<option [value]="4">Completed</option>
+							</select>
+				  </div>
+			</div>
+			 <div class='col-sm-2'>
+			    <div  class="text-right"  *ngIf="assignorder ==1">
+			    <label class="form-control" style="border:none;background:inherit;">Delivery Date:</label>
+				</div>
+			 </div>
+			<div class="col-sm-3" *ngIf="accessData.edit == 1 && assignorder ==1" >
+			    <div  class="text-left">
+				<angular2-date-picker class="form-control" (onDateSelect)="ondeliveryDateSelect($event)"  style="height:45px;" name="deliverydate" #deliverydate="ngModel" [settings]="settings" [(ngModel)]="assign_deliverydate" ></angular2-date-picker>	
+				</div>
+			</div>
+			<div class="col-sm-2" *ngIf="accessData.edit == 1">
+			     <div class="text-right">
+						<a translate (click)="joborderstatus()"><button
+								class="btn btn-success btn-with-icon" type="button">
+								<i class="ion-checkmark-circled"></i>Assign
+							</button></a>
+				  </div>
+			</div>
+		</div>
+		<div class="row filter-search">
+			<div class='col-sm-3'>
+				<input class="form-control" placeholder="Search ..." [(ngModel)]="filterQuery" />
+			</div>
+			<!-- <div class="offset-sm-6 col-sm-2">
+					 <button (click)="exportToExcel()" class="btn btn-primary btn-with-icon" type="button">Export </button>
+			</div> -->
+		</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead >
+					<tr >
+					    <th class="text-center" style="width: 1%"></th>
+						<th class="text-center" style="width:17%"><mfDefaultSorter
+								by="id">Ord.No</mfDefaultSorter></th>
+						<th class="text-center" style="width: 6%" class="text-center"><mfDefaultSorter
+								by="order_to">Ref No</mfDefaultSorter></th> 
+						<th class="text-center" style="width: 4%">Image</th>
+						<th class="text-center" style="width: 5%"><mfDefaultSorter
+								by="is_customeitem">Cus</mfDefaultSorter></th>
+						<th class="text-center" style="width: 5%"><mfDefaultSorter
+								by="assigndate">Ass Date</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="deliverydate">Del Date</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="deliverydate">Due Date</mfDefaultSorter></th>
+						<th class="text-center" style="width: 4%" class="text-center"><mfDefaultSorter
+								by="vendor_name">Items</mfDefaultSorter></th>
+						<th class="text-center" style="width: 4%" class="text-center"><mfDefaultSorter
+								by="order_qty">Wgt</mfDefaultSorter></th>
+						<th class="text-center" style="width: 4%" class="text-center"><mfDefaultSorter
+								by="vendor_name">Del.Items</mfDefaultSorter></th>
+						<th class="text-center" style="width: 5%" class="text-center"><mfDefaultSorter
+								by="order_to">Customer</mfDefaultSorter></th>
+						<th class="text-center" style="width: 5%" class="text-center"><mfDefaultSorter
+								by="employee">Employee</mfDefaultSorter></th>
+						 <th class="text-center" style="width: 5%" class="text-center"><mfDefaultSorter
+								by="vendor_name">Karigar</mfDefaultSorter></th>
+						<th class="text-center" style="width: 5%" class="text-center"><mfDefaultSorter
+								by=id_product>Design</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%" class="text-center"><mfDefaultSorter
+								by="orderstatus">Status</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody class="text-center">
+					<tr *ngFor="let item of mf.data" [style.background-color]="item.colors">
+					   <td><span *ngIf="item.joborderstatus!=4"><input type="checkbox"
+						[value]="item.isChecked" [checked]="item.isChecked"
+					   (change)="$event.target.checked ? item.isChecked = true : item.isChecked = false"></span></td>
+						<td class="text-center">{{item.orderno}}</td>
+						<td>{{item.customer_ref_no}}</td>
+						<td class="text-center"><img src="{{item.image}}" width="40" height="40" (click)="orderImage(item.id)" ></td>
+						<td>{{item.is_customeitem}}</td>
+						<td class="text-center">{{item.assigndate}}</td>
+						<!-- <td class="text-center"><div class="form-group" style="width:140px;">
+							<my-date-picker name="Expire_Date"
+						#Expire_Date="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="item.deliverydate"></my-date-picker>
+						</div></td>
+						<td class="text-center"><div class="form-group" style="width:140px;">
+							<my-date-picker name="Expire_Date"
+						#Expire_Date="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="item.due_date"></my-date-picker>
+						</div></td> -->
+						<td class="text-center"><input type="date" class="form-control" [ngModel] ="item.deliverydate | date:'yyyy-MM-dd'"  style="width: 145px;" 
+						(ngModelChange)="item.deliverydate = $event" [value]="datee | date:'yyyy-MM-dd'"></td>
+						
+						<td class="text-center"><input type="date" class="form-control" [ngModel] ="item.due_date | date:'yyyy-MM-dd'" style="width: 145px;" 
+						(ngModelChange)="item.due_date = $event" [value]="datee | date:'yyyy-MM-dd'"></td>
+						<td class="text-center">{{item.order_qty}}</td>
+						<td class="text-center">{{item.weight}}</td>
+						<td class="text-center"><span><input type="text" class="form-control" [(ngModel)]="item.delivery_items" name="delivery_items"
+								(keyup)="partial_delivery($event,item)" width="4px;"></span></td>
+						<td>{{item.order_to}}</td>
+						<td>{{item.employee}}</td>
+						<td>{{item.vendor_name}}</td>
+						<td>{{item.id_product}}</td> 
+						<td>{{item.orderstatus}}</td>
+                        <td class="text-center"><button
+								class="btn btn-primary btn-icon" type="button"
+								title="View Order Details"
+								(click)="vieworderdetails(item.id,item)">
+								<i class="ion-clipboard"></i>
+							</button> &nbsp;{{item.is_reorder=='1'?'Rework':'No'}}</td>
+					</tr>
+				</tbody>  
+				<tfoot>
+					<tr>
+						<td colspan="17"><mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+	<div class="row">
+			<app-modal [title]='title' [showClose]="true"
+		(onClose)="closeImageModal()" #imageModal color="white;">
+	<form #categoryimgfrm="ngForm" novalidate>
+	 <div class="text-center white"></div> 
+	   <div class="row">
+			   <!--  <span *ngIf="images?.length > 0">{{aaa()}}</span> -->
+			    <div class="w3-content w3-section"  *ngFor="let url of images;let i = index" class='col-sm-12'>
+					<img src="{{url}}" class="mySlides" alt="Los Angeles" style="width:100%;">
+				</div>				
+		</div>
+	</form>
+	<br />
+	<br />
+	 </app-modal>
+	 {{ bindImageModal(imageModal) }}	
+	</div>
+	 <app-modal [title]='title' [showClose]="true"
+		(onClose)="closeorderdetailmodal()" #OrderDetailsModal>
+	<form #branchfrm="ngForm" class="detailview" novalidate>
+		<div class="row orderdetail" *ngFor="let orderdetail of orderdetails">
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-6">
+						<label>Order Number</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.orderno}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Product Name</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.id_product}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Total Qty</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.order_qty}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Karigar</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.vendor_name}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Size or Length</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.size}}</label>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-6">
+						<label>Order Type</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.ortertype}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Is Custom Item</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.is_customeitem}}</label>
+					</div>
+				</div>
+			<!-- 	<div class="row">
+					<div class="col-md-6">
+						<label>Description</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.description}}</label>
+					</div>
+				</div> -->
+				<div class="row">
+					<div class="col-md-6">
+						<label>Order Status</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.orderstatus}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Customer</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.order_to}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Weight(g)</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.weight}}</label>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12">
+			    <div class="row">
+					 <div class="col-md-3">
+						 <label>&nbsp;Description</label>
+					</div>
+					<div class="col-md-9">
+							<label>{{orderdetail.description}}</label>
+					</div>
+				  </div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	</app-modal>
+	{{ bindOrderDetailModal(OrderDetailsModal) }}
+</div>
+</div>
+

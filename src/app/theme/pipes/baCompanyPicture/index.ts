@@ -1,0 +1,1 @@
+export * from './baCompanyPicture.pipe';

@@ -1,0 +1,179 @@
+<div class="widgets">
+<form #adminuserfrm="ngForm" novalidate>
+	<div class="row">
+		<div class="col-md-12">
+			<ba-card title="Login Information" baCardClass="with-scroll">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+
+						<label for="input01">User Name*</label> <input type="text"
+							class="form-control" #UserName="ngModel"
+							[(ngModel)]="users.urname" name="UserName" autofocus
+							placeholder="User Name" required>
+
+
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+
+						<label for="input01">Password*</label> <input type="password"
+							class="form-control" #Password="ngModel"
+							[(ngModel)]="users.psword" name="Password" autofocus
+							placeholder="Password" required>
+
+					</div>
+				</div>
+			</div>
+			</ba-card>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<ba-card title="Basic Information" baCardClass="with-scroll">
+			<div class="form-group">
+				<label for="input01">First Name*</label> <input type="text"
+					class="form-control" #FirstName="ngModel"
+					[(ngModel)]="users.firstname" name="FirstName" autofocus
+					placeholder="First Name" required>
+			</div>
+			<div class="form-group">
+				<label for="input01">Last Name*</label> <input type="text"
+					class="form-control" #LastName="ngModel"
+					[(ngModel)]="users.lastname" name="LastName"
+					placeholder="Enter Last Name" required>
+			</div>
+			<div class="form-group">
+				<label for="input01">D.O.B</label>
+				<my-date-picker class="form-control" name="Date_of_Birth"
+					#Date_of_Birth="ngModel" [options]="myDatePickerOptions"
+					[(ngModel)]="users.dob"></my-date-picker>
+			</div>
+			<div class="form-group">
+				<label for="input01">Profile*</label> <select class="form-control"
+					[(ngModel)]="users.id_profile" name="profile" #profile="ngModel" required
+					placeholder="Select Profile">
+					<option *ngFor="let pro of profiles" [value]="pro.id_profile"
+						class="list-group-item">{{pro.profile_name}}</option>
+				</select>
+			</div>
+			</ba-card>
+		</div>
+		<div class="col-md-6">
+			<ba-card title="Offical Information" baCardClass="with-scroll">
+			<div class="form-group">
+				<label for="input01">Employee Code</label> <input type="text"
+					class="form-control" #Empcode="ngModel"
+					[(ngModel)]="users.emp_code" name="Empcode" autofocus
+					placeholder="Employee Code">
+			</div>
+			<div class="form-group">
+				<label for="input01">D.O.J</label>
+				<my-date-picker class="form-control" name="Date_of_Join"
+					#Date_of_Join="ngModel" [options]="myDatePickerOptions"
+					[(ngModel)]="users.doj"></my-date-picker>
+			</div>
+			<div class="form-group">
+				<label for="input01">Department*</label> <select class="form-control"
+					[(ngModel)]="users.dept" name="department" #department="ngModel"
+					required placeholder="Select Department">
+					<option *ngFor="let dept of departments" [value]="dept.id_dept"
+						class="list-group-item">{{dept.name}}</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="input01">Designation*</label> <select
+					class="form-control" [(ngModel)]="users.designation" name="desig"
+					#desig="ngModel" required placeholder="Select Designation">
+					<option *ngFor="let des of designations" [value]="des.id_design"
+						class="list-group-item">{{des.name}}</option>
+				</select>
+			</div>
+			</ba-card>
+
+
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<ba-card title="Contact Information" baCardClass="with-scroll">
+			<div class="row">
+				<div class="col-md-4">
+					<div class="form-group">
+						<label for="input01">Address1*</label> <input type="text"
+							class="form-control" #Address1="ngModel"
+							[(ngModel)]="users.address1" name="Address1" autofocus
+							placeholder="Address1" required>
+					</div>
+					<div class="form-group">
+						<label for="input01">Address2</label> <input type="text"
+							class="form-control" #Address2="ngModel"
+							[(ngModel)]="users.address2" name="Address2" autofocus
+							placeholder="Address1">
+					</div>
+					<div class="form-group">
+						<label for="input01">Address3</label> <input type="text"
+							class="form-control" #Address3="ngModel"
+							[(ngModel)]="users.address3" name="Address3" autofocus
+							placeholder="Address3">
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label for="input01">Country*</label> <select
+							class="form-control" [(ngModel)]="users.id_country" name="country"
+							#country="ngModel" required placeholder="Select Country" (change)="getStateforCountry($event.target.value)">
+							<option *ngFor="let con of countries" [value]="con.id_country"
+								class="list-group-item">{{con.name}}</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="input01">State*</label> <select
+							class="form-control" [(ngModel)]="users.id_state" name="state"
+							#state="ngModel" required placeholder="Select State" (change)="getCityforState($event.target.value)">
+							<option *ngFor="let st of states" [value]="st.id_state"
+								class="list-group-item">{{st.name}}</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="input01">City*</label> <select
+							class="form-control" [(ngModel)]="users.id_city" name="city"
+							#city="ngModel" required placeholder="Select City">
+							<option *ngFor="let ct of cities" [value]="ct.id_city"
+								class="list-group-item">{{ct.name}}</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label for="input01">Phone</label> <input type="number"
+							class="form-control" #phone="ngModel"
+							[(ngModel)]="users.phone" name="phone" autofocus
+							placeholder="Phone">
+					</div>
+					<div class="form-group">
+						<label for="input01">Mobile*</label> <input type="number" maxlength="{{moblen}}"
+							class="form-control" #Mobileno="ngModel"
+							[(ngModel)]="users.mobile" name="Mobileno" autofocus
+							placeholder="Mobile" [required]="required">
+					</div>
+					<div class="form-group">
+						<label for="input01">Email</label> <input type="text"
+							class="form-control" #emailid="ngModel" 
+							[(ngModel)]="users.email" name="emailid" autofocus
+							placeholder="xyz@mail.com"  pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+					</div>
+				</div>
+			</div>
+			</ba-card>
+		</div>
+	</div>
+</form>
+<div class="mfoot">
+		<div class="offset-sm-4 col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary'  (click)="saveAdminuser()" [disabled]="!adminuserfrm.valid  || disablesubmit">Save</button>
+			<button class='btn btn-warning btn-with-icon' (click)="btnCloseAdminuser()">Close</button>
+		</div>
+	</div>
+</div>

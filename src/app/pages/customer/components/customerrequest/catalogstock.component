@@ -1,0 +1,48 @@
+import { Component, OnInit } from '@angular/core';
+import { CatalogStockService } from './catalogstock.service';
+import { Router } from '@angular/router';
+import { CommonService } from '../../../common/common.service';
+import { ModalComponent } from '../../../common/modal/modal.component';
+import { Location } from '@angular/common';
+
+@Component({
+  selector: 'app-catalogstock',
+  templateUrl: './catalogstock.component.html',
+  styleUrls: ['./catalogstock.component.css','../../../tables/components/dataTables/dataTables.scss']
+})
+export class CatalogStockComponent implements OnInit {
+
+    modal: ModalComponent;
+    priorityLDtitle = '';  
+    data;
+    filterQuery = '';
+    rowsOnPage = 100;
+    rowsOnPageSet = [100,200,300];
+    sortBy = 'id_orderdetails';
+    sortOrder = 'desc';
+    title: string = '';
+    isEditMode: boolean = false;
+    isAddMode: boolean = false;
+	accessData;
+
+    constructor(  private location: Location,private service: CatelogStockService, private commonservice: CommonService ) { 
+		
+		//Get User rights
+		let currentURL = this.location.path();
+		let path = currentURL.split('/');
+		this.accessData = this.commonservice.getUserAccessByMenuPath(path[2])[0];
+	}
+
+    ngOnInit() {
+        this.getData();
+    }
+ 	
+	//Get all the size values
+	getData() {
+        this.service.getData().then(( data ) => {
+            this.data = data;
+			console.log(this.data);
+        } );
+    }
+
+}

@@ -1,0 +1,61 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<div class="widgets" *ngIf="accessData.view == 1">
+	<div class="row">
+		<ba-card title="Permission List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+		<div class="row">
+			<div class='col-sm-3 filter-search'>
+				<input class="form-control" placeholder='Search ...' [(ngModel)]="filterQuery" />
+			</div>	
+			<div class="col-sm-3 offset-sm-6" *ngIf="accessData.add == 1 || accessData.edit == 1">
+				<a translate (click)="updatePermission()"><button
+						class="btn btn-primary btn-with-icon" type="button">
+						<i class="ion-checkmark-circled"></i>Apply
+					</button></a>
+			</div>			
+		</div>
+		<div class="panel panel-default">
+			<table class="table table-striped">
+				<thead>
+					<tr >
+						<th>Menu</th>
+						<th class="text-center" ><input type="checkbox" (change)="selectAll('view',$event.target.checked ? true: false)">   View</th>
+						<!-- <th class="text-center" >View</th> -->
+						<th class="text-center" ><input type="checkbox" (change)="selectAll('add',$event.target.checked ? true: false)"> Add</th>
+						<th class="text-center" ><input type="checkbox" (change)="selectAll('edit',$event.target.checked ? true: false)">  Edit</th>
+						<th class="text-center" ><input type="checkbox" (change)="selectAll('delete',$event.target.checked ? true: false)"> Delete</th>
+						<th class="text-center" ><input type="checkbox" (change)="selectAll('print',$event.target.checked ? true: false)"> Print</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of data  | dataFilter : filterQuery">
+						<td>{{item.menu}}</td>
+						<td class="text-center" ><input type="checkbox"
+							[value]="item.view" [checked]="item.view"
+							(change)="$event.target.checked ? item.view = true : item.view = false"></td>
+						<td class="text-center" ><input type="checkbox"
+							[value]="item.add" [checked]="item.add"
+							(change)="$event.target.checked ? item.add = true : item.add = false"></td>
+						<td class="text-center" ><input type="checkbox"
+							[value]="item.edit" [checked]="item.edit"
+							(change)="$event.target.checked ? item.edit = true : item.edit = false"></td>
+						<td class="text-center" ><input type="checkbox"
+							[value]="item.delete" [checked]="item.delete"
+							(change)="$event.target.checked ? item.delete = true : item.delete = false"></td>
+						<td class="text-center" ><input type="checkbox"
+							[value]="item.print" [checked]="item.print"
+							(change)="$event.target.checked ? item.print = true : item.print = false"></td>
+						
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="6"><!-- <mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator> --></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+</div>

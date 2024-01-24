@@ -1,0 +1,314 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<div id="backgroundPopup_1" align="center"  *ngIf="records.length==0"><img src="{{loadingPicture}}" alt="Please Wait..." style="margin-top:150px;width:100px;" /></div>	
+<div id="displaying_1" *ngIf="records.length>0">
+<div class="widgets" *ngIf="accessData.view == 1">
+    <div class="row">
+		            <div class='col-sm-3'>
+			        </div>
+					<label>From:</label>
+					<div class='col-sm-2'>
+					<my-date-picker  name="from_day"
+							#overdue="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="filter_records.from_day"></my-date-picker>
+		           </div>
+				    <label>To:</label>
+				    <div class='col-sm-2'>
+				      <my-date-picker  name="last_day" 
+							#overdue="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="filter_records.last_day"></my-date-picker>
+				  </div>
+				  <label><button (click)="getfilter_data()" class="btn btn-success btn-with-icon" type="button"><i class="fa fa-search"></i></button></label>
+	 </div>
+	<div class="row">
+		<ba-card title="Process Customer Request" baCardClass="with-scroll"
+			class="data-table-container">
+		<div class="row">
+			<div class="col-sm-10">
+				<div class="row">
+					<div class="col-sm-2">
+						<div class="row">
+							<input class="form-control" placeholder="Search ..." [(ngModel)]="filterQuery" />
+						</div>
+					</div>
+					<div class="col-sm-2">
+						<select class="form-control input-sm" #otype (change)="ordertypeFilter($event.target.value)"
+							name="ordertypefilter"  placeholder="Show all order">
+								<option value=""> - Show all order - </option>
+								<option  value="No"
+									class="list-group-item">Catalog Order - OOS</option>
+								<option  value="Yes"
+									class="list-group-item">Custom Order</option>
+						</select>
+					</div>
+					<div class="col-sm-2" *ngIf="accessData.edit == 1" >
+						<select class="form-control input-sm"
+						[(ngModel)]="assignvendor" name="assignvendor" #AssignVendor="ngModel"
+						required placeholder="Assign Order To Karigar">
+						<option value=""> - Assign Order To Karigar - </option>
+						<option *ngFor="let vendor of vendors" [value]="vendor.id_karigar"
+							class="list-group-item">{{vendor.firstname}}</option>
+					</select>
+					</div>
+					<div class="col-sm-2" *ngIf="accessData.edit == 1" >
+						<div class="text-right">
+							<select class="form-control input-sm"
+								[(ngModel)]="assignbranch" name="assignbranch" #AssignBranch="ngModel"
+								required placeholder="Select Branch">
+								<option value=""> - Select Branch - </option>
+								<option *ngFor="let  branch of branches" [value]="branch.id_branch"
+									class="list-group-item">{{branch.name}}</option>
+							</select>
+						</div>
+			        </div>
+					<div class="col-sm-2" *ngIf="accessData.edit == 1" >
+						<a translate (click)="assignordertovendor()"><button
+								class="btn btn-primary btn-with-icon" type="button">
+								<i class="ion-checkmark-circled"></i>Assign
+							</button></a>
+					</div>
+					<div class="col-sm-2" *ngIf="accessData.edit == 1" >
+						<div class="text-right">
+							<a translate (click)="rejectcustomerorder()"><button
+									class="btn btn-danger btn-with-icon" type="button">
+									<i class="ion-checkmark-circled"></i>Reject
+								</button></a>
+						</div>
+			      </div>
+				</div>
+			</div>
+
+			<div class="col-sm-2" *ngIf="accessData.edit == 1 && stock_manages== 1" >
+				<div class="text-right">
+					<a routerLink="/pages/orderprocess/catalog" translate><button
+						class="btn btn-success btn-with-icon" type="button" title='CatalogStock'>
+						<i class="fa fa-arrow-circle-right"></i>Instock orders
+					</button></a>
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading"><span *ngIf="stock_manages==1">Out of stock-</span>Customer Order Request List
+			 <span class="text-center" style="padding-left:50px">Customer Order Weight - {{smallImageSrc}}&nbsp;</span>
+			  <span class="text-center" style="padding-left:50px">Branch Wise Order -
+			  <span class="text-center" *ngFor="let  branch of branches"><span [style.background-color]="branch.colors">{{branch.name}}</span>&nbsp;&nbsp;&nbsp;</span></span></div>
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" 
+				>
+				<thead>
+					<tr>
+						<th class="text-center" style="width: 1%"></th>
+						<th class="text-center" style="width: 5%">Image</th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="id_orderdetails">Order No.</mfDefaultSorter></th>
+						<th class="text-center" style="width: 2%"><mfDefaultSorter
+								by="is_customeitem">Cus Ord</mfDefaultSorter></th>
+						<th class="text-center" style="width: 5%"><mfDefaultSorter
+								by="company">Company</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="order_to">Customer</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="order_to">Employee</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="id_product">Product</mfDefaultSorter></th>
+						<th class="text-center" style="width: 5%"><mfDefaultSorter
+								by="totalitems">Items</mfDefaultSorter></th>
+						<th class="text-center" style="width: 5%"><mfDefaultSorter
+								by="weight">Weight</mfDefaultSorter></th>
+						<th class="text-center" style="width: 5%"><mfDefaultSorter
+								by="size">Size</mfDefaultSorter></th>
+					    <th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="customer_ref_no">Ref No</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="order_date">Order Date</mfDefaultSorter></th>
+					   <th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="due_date">Due Date</mfDefaultSorter></th> 
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="vendors">Karigar</mfDefaultSorter></th>
+						<th style="width: 15%" class="text-center"><mfDefaultSorter
+								by="branch">Branch</mfDefaultSorter></th>
+						<th style="width: 5%" class="text-center"><mfDefaultSorter
+								by="branch">Status</mfDefaultSorter></th>
+					    <th style="width: 20%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data" [style.background-color]="item.colors"> 
+						<td class="text-center"><input type="checkbox"
+							[value]="item.isChecked" [checked]="item.isChecked"
+							(change)="$event.target.checked ? item.isChecked = true : item.isChecked = false"></td>
+						<td class="text-center"><img src="{{item.image}}"  width="40" height="30" (click)="orderImage(item.id_orderdetails)">
+					
+						<!-- <img [imageZoom]="zoomedImageSrc" src="{{item.image}}" [style.width.px]="40" [style.height.px]="30"> -->
+						
+						<div (click)="orderImage(item.id_orderdetails)" *ngIf='item.is_customeitem == "Yes" && item.customimages?.length >0'>View</div></td>
+						<td class="text-center">{{item.orderno}}</td>
+						<td class="text-center">{{item.is_customeitem}}</td>
+						<td class="text-center">{{item.company}}</td>
+						<td class="text-center">{{item.order_to}}</td>
+						<td class="text-center">{{item.employee}}</td>
+						<td class="text-center">{{item.itemname}}</td>
+						<td class="text-center">{{item.totalitems}}</td>
+						<td class="text-center">{{item.weight}}</td>
+						<td class="text-center">{{item.size == '' ? '-':item.size}}</td>
+						<td class="text-center">{{item.customer_ref_no}}</td>
+						<td class="text-center">{{item.order_date}}</td>
+					    <td class="text-center">{{item.due_date}}</td>
+						<td>{{item.vendors}}</td>
+						<td>{{item.branch_name}}</td> 
+						<td>{{item.is_reorder=='1'?'Rework':''}}</td> 
+					     <td><span *ngIf='item.vendors == ""'>-</span> 
+						 <span *ngIf='item.vendors != ""'><button (click)="customerorder_print($event,item)" class="btn btn-primary btn-icon" type="button" title="Print">
+						 <i class="fa fa-print"></i>
+						</button></span><button
+								class="btn btn-success btn-icon" type="button"
+								title="View Order Details"
+								(click)="vieworderdetails(item.id_orderdetails,item)">
+								<i class="ion-clipboard"></i>
+							</button></td>
+					
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="18"><mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card> 
+	</div>
+	<app-modal [title]='title' [showClose]="true"
+		(onClose)="closeImageModal()" #imageModal>
+	<form #categoryimgfrm="ngForm" novalidate>
+	 <div class="text-center white"></div> 
+		<div class="row">
+			   <!--  <span *ngIf="images?.length > 0">{{aaa()}}</span> -->
+			    <div class="w3-content w3-section"  *ngFor="let url of images;let i = index" class='col-sm-12'>
+					<img src="{{url}}" class="mySlides" alt="Los Angeles" style="width:100%;">
+				</div>				
+		</div>
+	</form>
+	<br />
+	<br />
+	 </app-modal>
+	 {{ bindImageModal(imageModal) }}
+	  <app-modal [title]='title' [showClose]="true"
+		(onClose)="closeorderdetailmodal()" #OrderDetailsModal>
+	<form #branchfrm="ngForm" class="detailview" novalidate>
+		<div class="row orderdetail" *ngFor="let orderdetail of orderdetails">
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-6">
+						<label>Order Number</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.orderno}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Product Name</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.id_product}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Total Qty</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.totalitems}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Size or Length</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.size}}</label>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-6">
+						<label>Order Type</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.ortertype}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Is Custom Item</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.is_customeitem}}</label>
+					</div>
+				</div>
+			<!-- 	<div class="row">
+					<div class="col-md-6">
+						<label>Description</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.description}}</label>
+					</div>
+				</div> -->
+				<div class="row">
+					<div class="col-md-6">
+						<label>Order Status</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.orderstatus}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Weight(g)</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.weight}}</label>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12">
+			    <div class="row">
+					 <div class="col-md-3">
+						 <label>&nbsp;Description</label>
+					</div>
+					<div class="col-md-9">
+							<label>{{orderdetail.description}}</label>
+					</div>
+				  </div>
+			</div>
+			<div class="col-md-12">
+			    <div class="row">
+					 <div class="col-md-3">
+						 <label>&nbsp;Re Order</label>
+					</div>
+					<div class="col-md-9">
+							<label>{{orderdetail.is_reorder=='1'?'Yes':'No'}}</label>
+					</div>
+				  </div>
+			</div>
+			<div class="col-md-12" *ngIf="orderdetail.is_reorder==1">
+			    <div class="row">
+					 <div class="col-md-3">
+						 <label>&nbsp;Reject Reason</label>
+					</div>
+					<div class="col-md-9">
+							<label>{{orderdetail.reject_reason}}</label>
+					</div>
+				  </div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	</app-modal>
+	{{ bindOrderDetailModal(OrderDetailsModal) }}
+</div>
+</div>

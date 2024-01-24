@@ -1,0 +1,90 @@
+<div class="widgets">
+	<div class="row">
+		<ba-card title="Process Customer Request" baCardClass="with-scroll"
+			class="data-table-container">
+		<div class="row">
+			<div class="col-sm-9">
+				<div class="row">
+					<div class="col-sm-4">
+						<div class="row">
+							<input class="form-control" [(ngModel)]="filterQuery" />
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<select class="form-control input-sm"
+						[(ngModel)]="assignvendor" name="assignvendor" #AssignVendor="ngModel"
+						required placeholder="Assign Order To Karigar">
+						<option value=""> - Assign Order To Karigar - </option>
+						<option *ngFor="let vendor of vendors" [value]="vendor.id_karigar"
+							class="list-group-item">{{vendor.firstname}}</option>
+					</select>
+					</div>
+					<div class="col-sm-4">
+						<a translate (click)="assignordertovendor()"><button
+								class="btn btn-primary btn-with-icon" type="button">
+								<i class="ion-checkmark-circled"></i>Assign
+							</button></a>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-3">
+				<div class="text-right">
+					<a translate (click)="rejectcustomerorder()"><button
+							class="btn btn-danger btn-with-icon" type="button">
+							<i class="ion-checkmark-circled"></i>Reject
+						</button></a>
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">Customer Order List</div>
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th class="text-center" style="width: 4%"></th>
+						<th class="text-center" style="width: 7%">Image</th>
+						<th class="text-center" style="width: 11%"><mfDefaultSorter
+								by="orderno">Order No.</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="order_to">Branch</mfDefaultSorter></th>
+						<th class="text-center" style="width: 20%"><mfDefaultSorter
+								by="id_product">Item</mfDefaultSorter></th>
+						<th class="text-center" style="width: 8%"><mfDefaultSorter
+								by="weight">Weight</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="order_date">Order Date</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="deliverydate">Del Date</mfDefaultSorter></th>
+						<th style="width: 20%" class="text-center">Karigar</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center"><input type="checkbox"
+							[value]="item.isChecked" [checked]="item.isChecked"
+							(change)="$event.target.checked ? item.isChecked = true : item.isChecked = false"></td>
+						<td class="text-center"><img src="{{item.image}}" width="40" height="35"></td>
+						<td class="text-center">{{item.orderno}}</td>
+						<td>{{item.order_to}}</td>
+						<td>{{item.id_product}}</td>
+						<td>{{item.weight}}</td>
+						<td class="text-center">{{item.order_date}}</td>
+						<td class="text-center">{{item.deliverydate}}</td>
+						<td>{{item.vendors}}</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="9"><mfBootstrapPaginator
+								[rowsOnPageSet]="[100,200,300]"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+
+</div>

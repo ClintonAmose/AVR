@@ -1,0 +1,44 @@
+@import "../../../theme/sass/conf/conf";
+
+.modal-buttons .btn {
+	margin-right: 20px;
+}
+.modal-header{
+	border-bottom:1px solid #a0bddd;
+}
+.modal-header button.close{
+	position:absolute; 
+	right: -25px;
+    top: -25px;
+    background-color: #000;
+    border-radius: 100%;
+    padding: 5px;
+    opacity: 0.65;
+}
+.modal-title {
+	color:#FFF;
+}
+.model-header button{
+	float : right;
+}
+
+.modal-content {
+	color: $dropdown-text;
+	background-color: #427cbc;
+}
+.uploadfilelbl{
+	color:#FFF !important;
+}
+.progress .label{
+	color:#FFF !important;
+}
+
+.modal-max {
+	width: 95%;
+}
+.deletemsg{
+	color:#FFF !important;
+}
+.detailview label{
+	color:#FFFFFF !important;
+}

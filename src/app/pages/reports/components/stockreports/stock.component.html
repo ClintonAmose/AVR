@@ -1,0 +1,91 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<div class="widgets" *ngIf="accessData.view == 1">
+	<div class="row">
+		<ba-card title="BranchWise Stock Details"
+			baCardClass="with-scroll" class="data-table-container">
+		<div class="row filter-search">
+			<div class="col-sm-3" >
+					<div class="text-right">
+						<select class="form-control input-sm"
+							[(ngModel)]="assignbranch" name="assignbranch" #AssignBranch="ngModel"
+							required placeholder="Select Branch">
+							<option value=""> - Select Branch - </option>
+							<option *ngFor="let  branch of branches" [value]="branch.id_branch"
+								class="list-group-item">{{branch.name}}</option>
+						</select>
+					</div>
+			 </div>
+			 <div class="col-sm-3">
+				<ng2-completer #remoteDataExample name="name" #Name="ngModel"
+				class="completer-limit" [(ngModel)]="name"
+				[datasource]="itemsRemote" [minSearchLength]="3"
+				[placeholder]="'Search for Design'"
+				(selected)="onRawdesignSelected($event);"
+				[matchClass]="'match'"
+				[inputClass]="'form-control name'"
+				[textSearching]="'Please wait...'" ></ng2-completer>
+		    </div>
+		    <div class="col-sm-2">
+			  OR &nbsp;&nbsp;&nbsp;&nbsp;<button (click)="alldesigndata()" class="btn btn-default" type="button">All Design</button>
+		   </div>
+		   <div class="col-sm-4">
+			 <button (click)="fetchdata()" class="btn btn-success" type="button">Get Report</button>
+		   </div>
+		</div>
+		<div class="row filter-search">
+			<div class='col-sm-3'>
+				<input class="form-control" placeholder="Search ..." [(ngModel)]="filterQuery" />
+			</div>
+			<div class="col-sm-3"><span class="form-control" style="border:none;background:inherit;">  Stock Weight - {{smallweight}}</span></div>
+			<div class="offset-sm-4 col-sm-2">
+				 <button (click)="exportToExcel()" class="btn btn-primary btn-with-icon" type="button">Export </button>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="id_orderdetails">Design</mfDefaultSorter></th>
+						<th class="text-center" style="width: 20%">Sku Number</th>
+						<th class="text-center" style="width: 15%"><mfDefaultSorter
+								by="is_customeitem">Purity</mfDefaultSorter></th>
+						<th style="width: 10%"><mfDefaultSorter
+								by="product">Weight</mfDefaultSorter></th>
+						<th style="width: 10%"><mfDefaultSorter
+								by=productcode>Size</mfDefaultSorter></th>
+						<th style="width: 10%"><mfDefaultSorter
+								by="dealer">Hook Type</mfDefaultSorter></th>
+						<th style="width: 10%"><mfDefaultSorter
+								by="order_to">Avaliable</mfDefaultSorter></th>
+						<!-- <th style="width: 15%"><mfDefaultSorter
+								by="orderstatus">Status</mfDefaultSorter></th> -->
+					</tr>
+				</thead>
+				<tbody >
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center">{{item.design_name}}</td>
+						<td class="text-center">{{item.sku_no}}</td>
+						<td class="text-center">{{item.purity}}</td>
+						<td>{{item.weight}}</td>
+						<td>{{item.sizeorlen}}</td>
+						<td>{{item.hook_type}}</td>
+						<td class="text-center">{{item.available_stock}}</td>
+						<!-- <td><button class="btn btn-success btn-with-icon" type="button">View Trans</button></td> -->
+
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="8"><mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+</div>

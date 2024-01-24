@@ -1,0 +1,147 @@
+<div class="widgets">
+	<div class="row">
+		<ba-card title="Settings" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+		</ba-card>
+	</div>
+	
+	<form #companyfrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-5">
+			   <div class="form-group">
+					<label for="input01">Company Name*</label> <input type="text"
+						class="form-control" #UserName="ngModel"
+						[(ngModel)]="company.comp_name" name="comp_name" autofocus
+						placeholder="Company Name" required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Company Lookup</label> <input type="text"
+						class="form-control" #Password="ngModel"
+						[(ngModel)]="company.comp_lookup" name="comp_lookup" placeholder="Lookup">
+				</div>
+				<div class="form-group">
+					<label for="input01">Business Address*</label> <input type="text"
+						class="form-control" #Password="ngModel"
+						[(ngModel)]="company.comp_address" name="comp_address" placeholder="Address"
+						required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Country*</label><select class="form-control"
+						[(ngModel)]="company.comp_con_code" name="country"
+						#country="ngModel" required placeholder="Select Country"
+						(change)="getStateforCountry($event.target.value)">
+						<option *ngFor="let con of countries" [value]="con.id_country"
+							class="list-group-item">{{con.name}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="input01">State*</label><select class="form-control"
+						[(ngModel)]="company.comp_state_code" name="state" #state="ngModel"
+						required  placeholder="Select State"
+						(change)="getCityforState($event.target.value)">
+						<option *ngFor="let st of states" [value]="st.id_state"
+							class="list-group-item">{{st.name}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="input01">City*</label><select class="form-control"
+						[(ngModel)]="company.comp_city_code" name="city" #city="ngModel"
+						required placeholder="Select City">
+						<option *ngFor="let ct of cities" [value]="ct.id_city"
+							class="list-group-item">{{ct.name}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="input01">Pin Code*</label> <input type="text"
+						class="form-control" #Password="ngModel"
+						[(ngModel)]="company.comp_pincode" name="comp_pincode" placeholder="Pin Code"
+						required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Ledger Name*</label> <input type="text"
+						class="form-control" #Password="ngModel"
+						[(ngModel)]="company.comp_ledgername" name="comp_ledgername" placeholder="Ledger Name"
+						required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Register Number</label> <input type="text"
+						class="form-control" #Password="ngModel"
+						[(ngModel)]="company.comp_regno" name="comp_regno" placeholder="Register Number">
+				</div>
+				<div class="form-group">
+					<label for="input01">Tin Number</label> <input type="text"
+						class="form-control" #Password="ngModel"
+						[(ngModel)]="company.comp_tinno" name="comp_tinno" placeholder="Tin Number">
+				</div>
+			</div>
+		   <div class="col-md-5">
+		    <div class="form-group">
+					<label for="input01">Service Tax Number</label> <input type="text"
+						class="form-control" #Password="ngModel"
+						[(ngModel)]="company.comp_servicetaxno" name="comp_servicetaxno" placeholder="Tin Number">
+				</div>
+				<div class="form-group">
+					<label for="input01">CST Number</label> <input type="text"
+						class="form-control" #Password="ngModel"
+						[(ngModel)]="company.comp_cstno" name="comp_cstno" placeholder="Tin Number">
+				</div>
+			   <div class="form-group">
+					<label for="input01">Contact Number*</label> <input type="text"
+						class="form-control" #UserName="ngModel"
+						[(ngModel)]="company.comp_contactno" name="comp_contactno" autofocus
+						placeholder="Contact Number" required>
+				</div>
+				 <div class="form-group">
+					<label for="input01">Fax Number</label> <input type="text"
+						class="form-control" #UserName="ngModel"
+						[(ngModel)]="company.comp_faxno" name="comp_faxno" autofocus
+						placeholder="Fax Number">
+				</div>
+				<div class="form-group">
+					<label for="input01">E-mail*</label> <input type="email"
+						class="form-control" #UserName="ngModel"
+						[(ngModel)]="company.comp_emailid" name="comp_emailid" autofocus
+						placeholder="Email" required>
+				</div>
+				<div class="form-group">
+					<label for="input01">URL*</label><input type="text"
+						class="form-control" #UserName="ngModel"
+						[(ngModel)]="company.comp_url" name="comp_url" autofocus
+						placeholder="URL" required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Description</label><input type="text"
+						class="form-control" #UserName="ngModel"
+						[(ngModel)]="company.comp_description" name="comp_description" autofocus
+						placeholder="Description" >
+				</div>
+				<div class="form-group">
+					<label for="input01">Currency*</label><input type="text"
+						class="form-control" #UserName="ngModel"
+						[(ngModel)]="company.currency" name="currency" autofocus
+						placeholder="Currency" >
+				</div>
+				<div class="form-group">
+					<label for="input01">Company Code</label><input type="text"
+						class="form-control" #UserName="ngModel"
+						[(ngModel)]="company.comp_code" name="comp_code" autofocus
+						placeholder="Company Code" >
+				</div>
+				<!-- <div class="form-group">
+					<label for="input01">Photo</label><input type="file"
+						#UserName="ngModel" class="form-control"
+						[(ngModel)]="company.comp_photoname" name="comp_photoname" >
+				</div> -->
+		   </div>
+		</div>
+	</form>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="offset-sm-4 col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="updateSettings()"
+				[disabled]="!companyfrm.valid">Save & Colse</button>
+			<button class='btn btn-warning btn-with-icon' (click)="closesettings()">Close</button>
+		</div>
+	</div>
+</div>

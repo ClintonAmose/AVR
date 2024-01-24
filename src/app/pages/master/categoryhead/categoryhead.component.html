@@ -1,0 +1,135 @@
+<div class="widgets">
+	<div class="row">
+		<ba-card title="Category Head List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+				<div class="row filter-search">
+					<div class="col-sm-3">
+				     <input class="form-control" [(ngModel)]="filterQuery" />
+					</div>
+				    <div class="col-sm-3">
+		            </div>
+					<div class="col-sm-3 offset-sm-3">
+	                   <a translate (click)="createnewcategoryheaddetails()"><button
+					  class="btn btn-primary btn-with-icon" type="button">
+					  <i class="ion-plus-round"></i>New Categoryhead
+					  </button></a>
+					</div>
+				</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="idcategoryhead">ID</mfDefaultSorter></th>
+						<th style="width: 30%" class="text-center"><mfDefaultSorter
+								by="namecategoryhead">Name</mfDefaultSorter></th>
+						<th style="width: 30%" class="text-center"><mfDefaultSorter
+								by="statuscategoryhead">Status</mfDefaultSorter></th>
+						<th style="width: 30%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center">{{item.idcategoryhead}}</td>
+						<td>{{item.namecategoryhead}}</td>
+						<td class="text-center">{{ (item.statuscategoryhead == 1) ? 'Active' : 'In Active'}}</td>
+						<td class="text-center">
+							<button (click)="updatecategoryhead(item.idcategoryhead)"
+								title="Update Categoryhead Info" class="btn btn-primary btn-icon"
+								type="button">
+								<i class="ion-edit"></i>
+							</button> &nbsp;
+							<button (click)="deletecategoryhead(item.idcategoryhead)" title="Delete Category Head"
+								class="btn btn-danger ion-trash-a" type="button"></button>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="4"><mfBootstrapPaginator
+								[rowsOnPageSet]="[25,50,75]"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+
+
+
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#editModal>
+	<form #catheadfrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="input01">Category Head Name*</label> <input type="text"
+						class="form-control" #CatHeadName="ngModel"
+						[(ngModel)]="categoryheaddet.namecategoryhead" name="categoryheadName" autofocus
+						placeholder="categoryhead Name" required>
+				</div>
+				
+
+				<div class="form-group">
+					<label for="input01">Status</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="categoryheaddet.statuscategoryhead" name="status"
+								id="active" value="1"> <span>Active</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="categoryheaddet.statuscategoryhead" name="status"
+								id="inactive" value="2"> <span>Inactive</span>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="savecategoryhead(false,false)"
+				[disabled]="!catheadfrm.valid" *ngIf="isAddMode">Save & New</button>
+			<button class='btn btn-success' (click)="savecategoryhead(false,true)"
+				[disabled]="!catheadfrm.valid" *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect' (click)="savecategoryhead(true,true)"
+				[disabled]="!catheadfrm.valid" *ngIf="isEditMode">Save & Close</button>
+			<button class='btn btn-default' (click)="close()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindModal(editModal) }}
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#deleteModal>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group deletemsg">Are you sure, you want to
+				delete this categoryhead?</div>
+		</div>
+	</div>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-danger'
+				(click)="removecategoryhead(categoryheaddet.idcategoryhead)">Delete</button>
+			<button class='btn btn-default' (click)="closedeletepopup()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ binddeleteModal(deleteModal) }}
+
+
+</div>

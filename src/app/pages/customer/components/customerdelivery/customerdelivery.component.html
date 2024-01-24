@@ -1,0 +1,261 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2014-11-29/FileSaver.min.js"></script>
+<script src="https://unpkg.com/b64-to-blob"></script>
+
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<div id="backgroundPopup_1" align="center"  *ngIf="records.length==0"><img src="{{loadingPicture}}" alt="Please Wait..." style="margin-top:150px;width:100px;" /></div>	
+<div id="displaying_1" *ngIf="records.length>0">
+<div class="widgets" *ngIf="accessData.view == 1">
+    <div class="row">
+		            <div class='col-sm-3'>
+			        </div>
+					<label>From:</label>
+					<div class='col-sm-2'>
+					<my-date-picker  name="from_day"
+							#overdue="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="filter_records.from_day"></my-date-picker>
+		           </div>
+				    <label>To:</label>
+				    <div class='col-sm-2'>
+				      <my-date-picker  name="last_day" 
+							#overdue="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="filter_records.last_day"></my-date-picker>
+				  </div>
+				  <label><button (click)="getfilter_data()" class="btn btn-success btn-with-icon" type="button"><i class="fa fa-search"></i></button></label>
+	 </div>
+	<div class="row">
+		<ba-card title="Ready To Delivery Orders" baCardClass="with-scroll"
+			class="data-table-container">
+
+		<div class="row filter-search">
+		 <div class='col-sm-3'>
+				<input class="form-control" placeholder="Search ..." [(ngModel)]="filterQuery" />
+		 </div>
+		 <div class='col-sm-3'>
+		</div>
+		<div class="col-sm-3 offset-sm-3" *ngIf="accessData.edit == 1">
+				     <a translate (click)="processdelivery()"><button
+						class="btn btn-success btn-with-icon" type="button">
+						<i class="ion-checkmark-circled"></i>Delivered
+					</button></a> 
+		 </div>
+		</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead >
+					<tr>
+						<th class="text-center" style="width: 1%"></th>
+						<th style="width: 5%" class="text-center">Image</th>
+						<th class="text-center" style="width: 11%"><mfDefaultSorter
+								by="id_orderdetails">Order No.</mfDefaultSorter></th>
+						<th style="width: 12%" class="text-center"><mfDefaultSorter
+								by="id_product">Product</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="orderdate">Ord Date</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="deliverydate">Del Date</mfDefaultSorter></th>
+						<th style="width: 5%" class="text-center"><mfDefaultSorter
+								by="receive_date">Received Date(ven)</mfDefaultSorter></th>		
+					    <th style="width: 5%" class="text-center"><mfDefaultSorter
+								by="totalitems">Items</mfDefaultSorter></th>			
+						<th style="width: 5%" class="text-center"><mfDefaultSorter
+								by="weight">Weight</mfDefaultSorter></th>
+						<th style="width: 5%" class="text-center">Size</th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="order_to">Customer</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="employee">Employee</mfDefaultSorter></th>
+						<th style="width: 5%" class="text-center"><mfDefaultSorter
+								by="branch_customer">Branch</mfDefaultSorter></th>
+						<th style="width: 13%" class="text-center"><mfDefaultSorter
+								by="customer_ref_no">Ref No</mfDefaultSorter></th>
+						<th style="width: 17%" class="text-center"><mfDefaultSorter
+								by="orderstatus">Status</mfDefaultSorter></th>
+						<th style="width: 15%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody  class="text-center">
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center"><input type="checkbox"
+							[value]="item.isChecked" [checked]="item.isChecked"
+							(change)="$event.target.checked ? item.isChecked = true : item.isChecked = false"></td>
+						<td class="text-center"><img src="{{item.image}}" width="40" height="35"></td>
+						<td class="text-center">{{item.orderno}}</td>
+						<td class="text-center">{{item.id_product}}</td>
+						<td class="text-center">{{item.orderdate}}</td>
+						<td class="text-center">{{item.deliverydate}}</td>
+						<td class="text-center">{{item.receive_date}}</td>
+						<td class="text-center">{{item.totalitems}}</td>
+						<td class="text-center">{{item.weight}}</td>
+                        <td class="text-center">{{item.size == '' ? '-':item.size}}</td>
+						<td class="text-center">{{item.order_to}}</td>
+						<td class="text-center">{{item.employee}}</td>
+						<td class="text-center">{{item.branch_customer}}</td>
+					    <td class="text-center">{{item.customer_ref_no}}</td>
+						<td class="text-center">{{item.orderstatus}}</td> 
+						<td class="text-center"><button
+								class="btn btn-primary btn-icon" type="button"
+								title="View Order Details"
+								(click)="vieworderdetails(item.id_orderdetails,item)">
+								<i class="ion-clipboard"></i>
+							</button> &nbsp;</td>
+					</tr>
+				</tbody>
+				 <tfoot>
+					<tr>
+						<td colspan="17"><mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator> </td>
+					</tr>
+				</tfoot> 
+			</table>
+		</div>
+		</ba-card>
+	</div>
+	<app-modal [title]='title' [showClose]="true"
+		(onClose)="closeorderdetailmodal()" #OrderDetailsModal>
+	<form #branchfrm="ngForm" class="detailview" novalidate>
+		<div class="row orderdetail" *ngFor="let orderdetail of orderdetails">
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-6">
+						<label>Order Number</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.orderno}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Order Type</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.ortertype}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Is Custom Item</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.is_customeitem}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Product Name</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.id_product}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Current Delivery</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.partial_delivery == 1 ? orderdetail.partial_deliveryitems: orderdetail.totalitems }}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Total Qty</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.totalitems}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Delivery Date</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.deliverydate}}</label>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-6">
+						<label>Image</label>
+						<!-- <button  (click)="downloadImgFile()"
+							class="btn btn-warning btn-with-icon" type="button">
+							<i class="ion-download"></i><i class="download"></i>Download
+						</button> -->
+					</div>
+					<div class="col-md-6">
+						<img style="max-width: 100%;"  src="{{orderdetail.image}}"> 
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Description</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.description}}</label>
+					</div>
+				</div>
+				<b><div class="row">
+					<div class="col-md-6">
+						<label>Total Delivery</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.partial_delivery == 1 ? orderdetail.total_partialitems: orderdetail.totalitems }} /{{ orderdetail.totalitems}}</label>
+					</div>
+				</div></b>
+				<b><div class="row">
+					<div class="col-md-6">
+						<label>Order Status</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.orderstatus}}</label>
+					</div>
+				</div></b>
+				 <b><div class="row">
+					<div class="col-md-6">
+						<label>Delivery Status</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.partial_delivery ==1 ? "Partial Delivered" : "Delivered"}}</label>
+					</div>
+				</div></b>
+			</div>
+		</div>
+		
+		<!-- <div class="row">
+			<table class="table table-striped image-table">
+				<tbody>
+					<tr >
+						<td *ngFor="let img of orderprodimages;let i = index"
+						[attr.data-index]="i"><img style="max-width: 100%;" src="{{img}}"></td>						
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="4"></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div> -->
+	</form>
+	<br />
+	<br />
+	</app-modal>
+	{{ bindOrderDetailModal(OrderDetailsModal) }}
+	<app-modal [title]='title' [showClose]="true"
+		(onClose)="closeImageModal()" #imageModal>
+	<form #categoryimgfrm="ngForm" novalidate>
+	 <div class="text-center white"></div> 
+		<div class="row">
+			   <!--  <span *ngIf="images?.length > 0">{{aaa()}}</span> -->
+			    <div class="w3-content w3-section"  *ngFor="let url of images;let i = index" class='col-sm-12'>
+					<img src="{{url}}" class="mySlides" alt="Los Angeles" style="width:100%;">
+				</div>				
+		</div>
+	</form>
+	<br />
+	<br />
+	 </app-modal>
+	 {{ bindImageModal(imageModal) }}
+</div></div>

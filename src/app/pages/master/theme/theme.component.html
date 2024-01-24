@@ -1,0 +1,152 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<div id="backgroundPopup_1" align="center"  *ngIf="records.length==0"><img src="{{loadingPicture}}" alt="Please Wait..." style="margin-top:150px;width:100px;" /></div>	
+<div id="displaying_1" *ngIf="records.length>0">
+<div class="widgets" *ngIf="accessData.view == 1">
+	<div class="row">
+		<ba-card title="Theme List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+		<div class="row filter-search">
+				<div class='col-sm-3'>
+							<input class="form-control" placeholder='Search ...' [(ngModel)]="filterQuery" />
+						</div>
+						<div class='col-sm-3'>
+						</div>
+						<div class="col-sm-3 offset-sm-3" *ngIf="accessData.add == 1">
+				         <a translate (click)="createnewthemedetails()"><button
+						class="btn btn-primary btn-with-icon" type="button">
+						<i class="ion-plus-round"></i>New Theme
+					    </button></a>
+			            </div>
+		</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th style="width: 10%" class="text-center" ><mfDefaultSorter
+								by="id_theme">Id</mfDefaultSorter></th>
+						<th style="width: 20%" ><mfDefaultSorter
+								by="code_theme">Theme Code</mfDefaultSorter></th>
+						<th style="width: 30%" ><mfDefaultSorter
+								by="name_theme">Theme Name</mfDefaultSorter></th>
+						<th style="width: 20%" class="text-center"><mfDefaultSorter
+								by="status_theme">Status</mfDefaultSorter></th>
+						<th style="width: 20%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center">{{item.id_theme}}</td>
+						<td >{{item.code_theme}}</td>
+						<td>{{item.name_theme}}</td>
+						<td class="text-center">{{ (item.status_theme == 1) ? 'Active' : 'In Active'}}</td>
+						<td class="text-center">
+							<button (click)="updatetheme(item.id_theme)"
+								title="Update Theme Info" class="btn btn-primary btn-icon"
+								type="button">
+								<i class="ion-edit"></i>
+							</button> &nbsp;
+							<button (click)="deletetheme(item.id_theme)" title="Delete Theme" *ngIf="accessData.delete == 1"
+								class="btn btn-danger ion-trash-a" type="button"></button>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="5"><mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+
+
+
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#editModal>
+	<form #deptfrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="input01">Theme Name*</label> <input type="text"
+						class="form-control" #ThemeName="ngModel"
+						[(ngModel)]="themedet.name_theme" name="ThemeName" autofocus
+						placeholder="Theme Name" required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Theme Code* <span class="hint"> (Code should be unique)</span></label> <input type="text"
+						class="form-control" #ThemeCode="ngModel"
+						[(ngModel)]="themedet.code_theme" name="ThemeCode"
+						placeholder="Theme Code" required>
+				</div>
+				<div class="form-group">
+					<label for="description">Description</label>
+					<textarea class="form-control" id="description"
+						#CatDescription="ngModel" [(ngModel)]="themedet.desc_theme"
+						name="CatDescription" placeholder="Category Description"></textarea>
+				</div>
+
+				<div class="form-group">
+					<label for="input01">Status</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="themedet.status_theme" name="status"
+								id="active" value="1"> <span>Active</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="themedet.status_theme" name="status"
+								id="inactive" value="0"> <span>Inactive</span>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="saveTheme(false,false)"
+				[disabled]="!deptfrm.valid || disablesubmit" *ngIf="isAddMode">Save & New</button>
+			<button class='btn btn-success' (click)="saveTheme(false,true)"
+				[disabled]="!deptfrm.valid || disablesubmit" *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect' (click)="saveTheme(true,true)"
+				[disabled]="!deptfrm.valid || disablesubmit" *ngIf="isEditMode && accessData.edit == 1">Save & Close</button>
+			<button class='btn btn-default' (click)="close()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindModal(editModal) }}
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#deleteModal>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group deletemsg">Are you sure, you want to
+				delete this theme?</div>
+		</div>
+	</div>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-danger'
+				(click)="removeTheme(themedet.id_theme)">Delete</button>
+			<button class='btn btn-default' (click)="closedeletepopup()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ binddeleteModal(deleteModal) }}
+
+
+</div></div>

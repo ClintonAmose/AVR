@@ -1,0 +1,157 @@
+<div class="widgets">
+	<div class="row">
+		<ba-card title="Stone Rate List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+	     <div class="row filter-search">
+				<div class="col-sm-3">
+					<input class="form-control" [(ngModel)]="filterQuery" />
+				</div>
+				<div class="col-sm-3">
+				</div>
+				<div class="offset-sm-3 col-sm-3"><a translate (click)="createnewstoneratedetails()"><button
+						class="btn btn-primary btn-with-icon" type="button">
+						<i class="ion-plus-round"></i>New StoneRate
+					</button></a>
+				</div>
+			</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th style="width: 10%" class="text-center">ID</th>
+						<th style="width: 30%" class="text-center"><mfDefaultSorter
+								by="name_size">Item</mfDefaultSorter></th>
+						 <th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="status">From Date</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="status">To Date</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="status">Amount</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="status">Unit</mfDefaultSorter></th>
+						<th style="width: 30%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center">{{item.id_stonerate}}</td>
+						<td class="text-center">{{item.itemname}}</td>
+						<td class="text-center">{{item.from_date}}</td>
+						<td class="text-center">{{item.to_date}}</td>
+						<td class="text-center">{{item.amount}}</td>
+						<td class="text-center">{{(item.unitid == 1) ? 'Carats' : 'pieces'}}</td>
+						<td class="text-center">
+							<button (click)="updatestonerate(item.id_stonerate)"
+								title="Update StoneRate Info" class="btn btn-primary btn-icon"
+								type="button">
+								<i class="ion-edit"></i>
+							</button> &nbsp;
+							<button (click)="deletestonerate(item.id_stonerate)" title="Delete StoneRate"
+								class="btn btn-danger ion-trash-a" type="button"></button>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="7"><mfBootstrapPaginator
+								[rowsOnPageSet]="[100,200,300]"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+		<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#editModal>
+	<form #stoneratefrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+			   <div class="form-group">
+					<label for="input01">Item</label><select
+						class="form-control" [(ngModel)]="stonerate.id_item" name="id_item"
+						#department="ngModel" required placeholder="Select Item">
+						<option *ngFor="let item of items" [value]="item.id_item"
+							class="list-group-item">{{item.name_item}}</option>
+					</select>
+				</div>
+			   <div class="form-group">
+			        <label for="input01">From Date</label>
+					<my-date-picker class="form-control" name="from_date"
+					#Date_of_Birth="ngModel" [options]="myDatePickerOptions"
+					[(ngModel)]="stonerate.from_date"></my-date-picker> 
+			   </div>
+			   <div class="form-group">
+			        <label for="input01">To Date</label>
+					<my-date-picker class="form-control" name="from_date"
+					#Date_of_Birth="ngModel" [options]="myDatePickerOptions"
+					[(ngModel)]="stonerate.to_date"></my-date-picker> 
+			   </div>
+			   <div class="form-group">
+				<label for="input01">Unit ID</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"><input
+								type="radio" [(ngModel)]="stonerate.unitid"  name="unitid"
+								 value="1"><span>Carats</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"><input
+								type="radio" [(ngModel)]="stonerate.unitid" name="unitid"
+								value="0"><span>Pieces</span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="input01">Amount*</label><input type="text"
+						class="form-control" #SizeName="ngModel" id="Amount"
+						[(ngModel)]="stonerate.amount" name="amount"
+						placeholder="Amount" required>
+				</div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="saveStoneRate(false,false)"
+				[disabled]="!stoneratefrm.valid" *ngIf="isAddMode">Save & New</button>
+			<button class='btn btn-success' (click)="saveStoneRate(false,true)"
+				[disabled]="!stoneratefrm.valid" *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect' (click)="saveStoneRate(true,true)"
+				[disabled]="!stoneratefrm.valid" *ngIf="isEditMode">Save & Close</button>
+			<button class='btn btn-default' (click)="close()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindModal(editModal) }}
+	
+		<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#deleteModal>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group deletemsg">Are you sure, you want to
+				delete this StoneRate Detalis?</div>
+		</div>
+	</div>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-danger'
+				(click)="removestonerate(stonerate.id_stonerate)">Delete</button>
+			<button class='btn btn-default' (click)="closedeletepopup()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ binddeleteModal(deleteModal) }}
+	
+</div>

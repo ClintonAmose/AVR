@@ -1,0 +1,210 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<div id="backgroundPopup_1" align="center"  *ngIf="records.length==0"><img src="{{loadingPicture}}" alt="Please Wait..." style="margin-top:150px;width:100px;" /></div>	
+<div id="displaying_1" *ngIf="records.length>0">
+<div class="widgets" *ngIf="accessData.view == 1">
+	<div class="row">
+		<ba-card title="Stock Transfer List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+		<div class="row filter-search">
+			<div class="col-sm-3">
+				<input class="form-control" placeholder='Search ...' [(ngModel)]="filterQuery" />
+			</div>
+			<div class="col-sm-3">
+				<button
+						class="btn btn-success btn-with-icon" (click)="updateStatus()" type="button">
+						<!-- <i class="ion-plus-round"></i>-->Delivered
+					</button>
+		  </div>
+			<div class="col-sm-3 offset-sm-3" *ngIf="accessData.add == 1" >
+				<a translate (click)="createadminorderdetails()"><button
+						class="btn btn-primary btn-with-icon" type="button">
+						<i class="ion-plus-round"></i>Transfer Stock
+					</button></a>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th class="text-center" style="width: 1%"></th>
+						<th class="text-center" style="width: 7%">Image</th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="sku_no">SKU No</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="trans_from">From Branch</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="trans_to">To Branch</mfDefaultSorter></th>
+						<th class="text-center" style="width: 20%"><mfDefaultSorter
+								by="id_product">Item</mfDefaultSorter></th>
+						<th class="text-center" style="width: 8%"><mfDefaultSorter
+								by="no_of_product">Quantity</mfDefaultSorter></th>
+						<th class="text-center" style="width: 5%"><mfDefaultSorter
+								by="weight">Weight</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="date_add">Transfer Date</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="date_upd">Del Date</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="status">Status</mfDefaultSorter></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data" >
+						<td class="text-center"><input type="checkbox" *ngIf="item.status == 'In transit'"
+							[value]="item.isChecked" [checked]="item.isChecked"
+							(change)="$event.target.checked ? item.isChecked = true : item.isChecked = false"></td>
+						<td class="text-center"><img  src="{{item.image}}"  width="40" height="35"></td>
+						<td class="text-center">{{item.sku_no}}</td>
+						<td>{{item.trans_from}}</td>
+						<td>{{item.trans_to}}</td>
+						<td class="text-center" >{{item.id_product}}</td>
+						<td class="text-center">{{item.no_of_product}}</td>
+						<td>{{item.weight}}</td>
+						<td class="text-center">{{item.date_add}}</td>
+						<td class="text-center">{{item.date_upd == nulll && item.status == 'Delivered' ? "-":item.date_upd}}</td>
+						<td>{{item.status}}</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="12"><mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+     </div>
+
+	 <app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#editModal>
+	<form #designskuformation="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+				   <div class="form-group">
+						<label for="input01">From Branch*</label><select class="form-control"
+						name="Branch" [(ngModel)]="stocktransferdetails.from_branchid" required>
+						<option *ngFor="let branch of branches" [value]="branch.id_branch" class="list-group-item">{{branch.name}}</option>
+						</select>
+				   </div>
+				    <div class="form-group">
+						<label for="input01">To Branch*</label><select class="form-control"
+						name="Branch" [(ngModel)]="stocktransferdetails.to_branchid" required>
+						<option *ngFor="let branch of branches" [value]="branch.id_branch" class="list-group-item">{{branch.name}}</option>
+						</select>
+				   </div>
+				   <div class="form-group">
+					<label for="input01">Design*</label>
+					<ng2-completer #remoteDataExample name="name"
+					class="completer-limit" [(ngModel)]="stocktransferdetails.name"
+					[datasource]="itemsRemote" [minSearchLength]="3"
+				    [placeholder]="'Search for Design'"
+					(selected)="onRawdesignSelected($event);"
+					[matchClass]="'match'"
+					[inputClass]="'form-control name'"
+				    [textSearching]="'Please wait...'" ></ng2-completer>
+				   </div>
+				   <div class="form-group" *ngIf="stocktransferdetails.stocks !=''">
+				    <label for="input01">Available Sku</label>
+					<br>
+					<div class="col-sm-3">
+				     <button class="btn btn-success btn-with-icon" type="button" (click)="add_design()">Add Design</button>
+					</div>
+					<br>
+						<table class="table table-striped"
+					[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+					[mfRowsOnPage]="rowsOnPage">
+						<thead>
+							<tr style="color:white;">
+								<th class="text-center" style="width: 7%;"></th>
+								<th class="text-center" style="width: 10%"><mfDefaultSorter
+										by="sku_no">Sku No</mfDefaultSorter></th>
+								<!-- <th class="text-center" style="width: 10%"><mfDefaultSorter
+										by="trans_from">Purity</mfDefaultSorter></th>
+								<th class="text-center" style="width: 10%"><mfDefaultSorter
+										by="trans_to">Weight</mfDefaultSorter></th> -->
+							    <th class="text-center" style="width: 10%"><mfDefaultSorter
+										by="trans_to">Available</mfDefaultSorter></th>
+								 <th class="text-center" style="width: 10%"><mfDefaultSorter
+										by="trans_to">Transfer</mfDefaultSorter></th>
+							</tr>
+						</thead>
+						<tbody style='color:white;'>
+							<tr *ngFor="let stock of avaliable_stock">
+							   <td class="text-center"><input type="checkbox" #skuid
+								[value]="stock.isChecked" (change)="$event.target.checked ? stock.isChecked = true : stock.isChecked = false;chksku_stocks()" [checked]="stock.isChecked" ></td>
+								<td class="text-center">{{stock.sku_no}}<br/>(P-{{stock.purity}} ,W-{{stock.weight}},S/L-{{sizeorlen}})</td>
+								<td class="text-center">{{stock.stock_available}}</td>
+								<td class="text-center"><input type="text" class="form-control" [(ngModel)]="stock.transfer_stocks" name="transfer_stocks"
+								(keyup)="transfer_stocks($event,stock)"></td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="4"><mfBootstrapPaginator
+										[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+							</tr>
+						</tfoot>
+			        </table>
+					<div class="row" *ngIf="avaliable_designs?.length > 0">
+					<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage">
+						<thead>
+							<tr style="color:white;">
+								<th class="text-center" style="width: 7%;">S.No</th>
+								<th class="text-center" style="width: 7%;">Design</th>
+								<th class="text-center" style="width: 10%"><mfDefaultSorter
+										by="design_name">Sku No</mfDefaultSorter></th>
+								 <th class="text-center" style="width: 10%"><mfDefaultSorter
+										by="stock_available">Transfer</mfDefaultSorter></th>
+								<th class="text-center" style="width: 10%"><mfDefaultSorter
+										by="design_name">Status</mfDefaultSorter></th>
+							</tr>
+						</thead>
+						<tbody style='color:white;'>
+							<tr *ngFor="let design of avaliable_designs;let i = index">
+							   <td class="text-center">{{i+1}}</td>
+							   <td class="text-center">{{design.design_name}}</td>
+								<td class="text-center">{{design.sku_no}}<br/>(P-{{design.purity}} ,W-{{design.weight}},S/L-{{design.sizeorlen}})</td>
+								<td class="text-center">{{design.transfer_stocks}}</td>
+								<td class="text-center"><button class="btn btn-danger btn-with-icon" type="button" (click)="remove_design($event,design)">Remove</button></td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="5"><mfBootstrapPaginator
+										[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+							</tr>
+						</tfoot>
+			        </table>
+					</div>
+				  </div>
+			</div>
+		</div>
+</form>
+	<br />
+	<br />
+     <div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="saveSkuorder(false,false)"
+				[disabled]="!designskuformation.valid " *ngIf="isAddMode">Save & New</button>
+			<button class='btn btn-success' (click)="saveSkuorder(false,true)"
+				[disabled]="!designskuformation.valid " *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect' (click)="saveSkuorder(true,true)"
+				[disabled]="!designskuformation.valid " *ngIf="isEditMode && accessData.edit == 1">Save & Close</button>
+			<button class='btn btn-default' (click)="close()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindModal(editModal) }}
+
+
+
+</div>
+</div>

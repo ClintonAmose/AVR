@@ -1,0 +1,133 @@
+<div class="widgets">
+	<div class="row">
+		<ba-card title="Material List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+		<div class="row filter-search">
+						<div class='col-sm-3'>
+							<input class="form-control" [(ngModel)]="filterQuery" />
+						</div>
+						<div class='col-sm-3'>
+						</div>
+						<div class="col-sm-3 offset-sm-3">
+				        <a translate (click)="createnewmaterialdetails()"><button
+						class="btn btn-primary btn-with-icon" type="button">
+						<i class="ion-plus-round"></i>New Material
+					     </button></a>
+			            </div>
+		</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th style="width: 10%" class="text-center">ID</th>
+						<th style="width: 40%" class="text-center"><mfDefaultSorter
+								by="name">Material Name</mfDefaultSorter></th>
+						<th style="width: 20%" class="text-center"><mfDefaultSorter
+								by="status">Status</mfDefaultSorter></th>
+						<th style="width: 30%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center">{{item.id_material}}</td>
+						<td>{{item.name_material}}</td>
+						<td>{{ (item.status_material == 1) ? 'Active' : 'In Active'}}</td>
+						<td class="text-center">
+							<button (click)="updatematerial(item.id_material)"
+								title="Update Material Info" class="btn btn-primary btn-icon"
+								type="button">
+								<i class="ion-edit"></i>
+							</button> &nbsp;
+							<button (click)="deletematerial(item.id_material)"
+								title="Delete Material" class="btn btn-danger ion-trash-a"
+								type="button"></button>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="4"><mfBootstrapPaginator
+								[rowsOnPageSet]="[25,50,75]"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+
+
+
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#editModal>
+	<form #materialfrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="input01">Material Name*</label> <input type="text"
+						class="form-control" #MaterialName="ngModel"
+						[(ngModel)]="materialdet.name_material" name="MaterialName"
+						autofocus placeholder="Material Name" required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Status</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="materialdet.status_material"
+								name="status" id="active" value="1"> <span>Active</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="materialdet.status_material"
+								name="status" id="inactive" value="0"> <span>Inactive</span>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="saveMaterial(false,false)"
+				[disabled]="!materialfrm.valid" *ngIf="isAddMode">Save & New</button>
+			<button class='btn btn-success' (click)="saveMaterial(false,true)"
+				[disabled]="!materialfrm.valid" *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect' (click)="saveMaterial(true,true)"
+				[disabled]="!materialfrm.valid" *ngIf="isEditMode">Save & Close</button>
+			<button class='btn btn-default' (click)="close()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindModal(editModal) }}
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#deleteModal>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group deletemsg">Are you sure, you want to
+				delete this material?</div>
+		</div>
+	</div>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-danger'
+				(click)="removeMaterial(materialdet.id_material)">Delete</button>
+			<button class='btn btn-default' (click)="closedeletepopup()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ binddeleteModal(deleteModal) }}
+
+
+</div>

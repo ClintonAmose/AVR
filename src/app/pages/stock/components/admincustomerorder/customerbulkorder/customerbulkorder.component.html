@@ -1,0 +1,130 @@
+<div class="widgets">
+	<div class="row">
+		<ba-card title="Catalog/Customer Bulk Order Add List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+		<div class="row filter-search">
+			<div class='col-sm-3'>
+				<input class="form-control" placeholder="Search ..." [(ngModel)]="filterQuery" />
+			</div>
+			<div class="col-sm-3 offset-sm-1">
+				<input type="file" #myInput style="display: inline-block;" (change)="incomingfile($event)" placeholder="Upload file" accept=".xlsx">
+			</div>
+			 <div class="col-sm-3 offset-sm-1">
+                 <button type="button" class="btn btn-info" (click)="Upload()"  [disabled]="disablesubmit">Import</button>
+			</div>
+		</div>
+		<div class="panel panel-default">
+		   <div class="panel-heading">Bulk Order - Excel Import List Format</div><br>
+		   <div class="panel-heading1"><b>*Asterisk - In Excel Fied Name Rows Name need in Excel Cells Column</b></div>
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th style="width: 20%">Excel Field Name</th>
+						<th style="width: 20%">Description</th>
+					</tr>
+				</thead>
+				<tbody>
+				    <tr>
+					   <td>order_for*</td>
+					   <td>1 - Branch , 2 - Customer</td>
+					</tr>
+					<tr>
+					   <td>order_to*</td>
+					   <td>Order For -> 1 (Branch Id), 2 (Cusotmer Id)</td>
+					</tr>
+					<tr>
+					   <td>order_date</td>
+					   <td>Order Date And Time</td>
+					</tr>
+					<tr>
+					   <td>order_taken_by</td>
+					   <td>order_to - (Given Customer Id use Customer Id)/(Given Branch Id use Branch Id)</td>
+					</tr>
+					<tr>
+					   <td>ortertype*</td>
+					   <td>1 - Catalog order , 2 - Customer order , 3 - Repair order , 4 - Catalog Admin order </td>
+					</tr>
+					<tr>
+					   <td>customerid*</td>
+					   <td>Ortertype -> 2  - Store Cusotmer Id</td>
+					</tr>
+					<tr>
+					   <td>branchid*</td>
+					   <td>Ortertype 1 / Ortertype  4 - Store Branch Id</td>
+					</tr>
+					<tr>
+					   <td>isurgent</td>
+					   <td>Urgent Order/Normal Order</td>
+					</tr>
+					<tr>
+					   <td>is_customeitem</td>
+					   <td>Customer Item 0->No 1->Yes</td>
+					</tr>
+					<tr>
+					   <td>id_product*</td>
+					   <td>Product Id(Design)</td>
+					</tr>
+					<tr>
+					   <td>name*</td>
+					   <td>Product Name(Design)</td>
+					</tr>
+					<tr>
+					   <td>qty*</td>
+					   <td>Qty</td>
+					</tr>
+					<tr>
+					   <td>id_purity*</td>
+					   <td>Purity</td>
+					</tr>
+					<tr>
+					   <td>reqweight*</td>
+					   <td>Weight</td>
+					</tr>
+					<tr>
+					   <td>is_chain</td>
+					   <td>0 - not chain , 1- chain</td>
+					</tr>
+					<tr>
+					   <td>hook_type</td>
+					   <td>1 - S type , 2 - M type</td>
+					</tr>
+					<tr>
+					   <td>id_karigar</td>
+					   <td>Karigar's ID</td>
+					</tr>
+					<tr>
+					   <td>remarks</td>
+					   <td>Remarks Of Order</td>
+					</tr>
+					<tr>
+					   <td>sizeorlen</td>
+					   <td>Size Of Product</td>
+					</tr>
+				    <tr>
+					   <td>is_stock_avail*</td>
+					   <td>0 - Assign karigar , 1 - Stock delivery</td>
+					</tr>
+					<tr>
+					   <td>imageurl</td>
+					   <td>Is_customeitem - 1(Copy Image Url link)</td>
+					</tr>
+					<tr>
+					   <td>customimages</td>
+					   <td>Is_customeitem - 1(Image Name with Format) Eg:'xyz.jpg'</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="11"><mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div> 
+		</ba-card>
+	</div>
+ 
+</div>

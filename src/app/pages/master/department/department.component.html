@@ -1,0 +1,134 @@
+<div class="widgets">
+	<div class="row">
+		<ba-card title="Department List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+		<div class="row filter-search">
+			<div class="col-sm-3">
+				<input class="form-control" [(ngModel)]="filterQuery" />
+			</div>
+			<div class="col-sm-3">
+		    </div>
+			<div class="col-sm-3 offset-sm-3">
+				<a translate (click)="createnewdepartmentdetails()"><button
+						class="btn btn-primary btn-with-icon" type="button">
+						<i class="ion-plus-round"></i>New Department
+					</button></a>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th style="width: 10%" class="text-center">ID</th>
+						<th style="width: 40%" class="text-center"><mfDefaultSorter
+								by="name">Department</mfDefaultSorter></th>
+						<th style="width: 20%" class="text-center"><mfDefaultSorter
+								by="status">Status</mfDefaultSorter></th>
+						<th style="width: 30%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center">{{item.id_dept}}</td>
+						<td>{{item.name}}</td>
+						<td>{{ (item.status == 1) ? 'Active' : 'In Active'}}</td>
+						<td class="text-center">
+							<button (click)="updatedepartment(item.id_dept)"
+								title="Update Department Info" class="btn btn-primary btn-icon"
+								type="button">
+								<i class="ion-edit"></i>
+							</button> &nbsp;
+							<button (click)="deletedepartment(item.id_dept)"
+								title="Delete Department" class="btn btn-danger ion-trash-a"
+								type="button"></button>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="4"><mfBootstrapPaginator
+								[rowsOnPageSet]="[25,50,75]"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+
+
+
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#editModal>
+	<form #deptfrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="input01">Department Name*</label> <input type="text"
+						class="form-control" #DepartmentName="ngModel"
+						[(ngModel)]="departmentdet.name" name="DepartmentName" autofocus
+						placeholder="Department Name" required>
+				</div>
+
+				<div class="form-group">
+					<label for="input01">Status</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="departmentdet.status" name="status"
+								id="active" value="1"> <span>Active</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="departmentdet.status" name="status"
+								id="inactive" value="0"> <span>Inactive</span>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="saveDepartment(false,false)"
+				[disabled]="!deptfrm.valid" *ngIf="isAddMode">Save & New</button>
+			<button class='btn btn-success' (click)="saveDepartment(false,true)"
+				[disabled]="!deptfrm.valid" *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect' (click)="saveDepartment(true,true)"
+				[disabled]="!deptfrm.valid" *ngIf="isEditMode">Save & Close</button>
+			<button class='btn btn-default' (click)="close()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindModal(editModal) }}
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#deleteModal>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group deletemsg">Are you sure, you want to
+				delete this department?</div>
+		</div>
+	</div>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-danger'
+				(click)="removeDepartment(departmentdet.id_dept)">Delete</button>
+			<button class='btn btn-default' (click)="closedeletepopup()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ binddeleteModal(deleteModal) }}
+
+
+</div>

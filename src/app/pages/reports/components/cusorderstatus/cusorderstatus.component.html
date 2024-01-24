@@ -1,0 +1,119 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<div id="backgroundPopup_1" align="center"  *ngIf="records.length==0"><img src="{{defaultPicture}}" alt="Please Wait..." style="margin-top:150px;width:100px;" /></div>	
+<div id="displaying_1" *ngIf="records.length>0">
+<div class="widgets" *ngIf="accessData.view == 1">
+    <div class="row">
+		            <div class='col-sm-3'>
+			        </div>
+					<label>From:</label>
+					<div class='col-sm-2'>
+					<my-date-picker  name="from_day"
+							#overdue="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="filter_records.from_day"></my-date-picker>
+		           </div>
+				    <label>To:</label>
+				    <div class='col-sm-2'>
+				      <my-date-picker  name="last_day" 
+							#overdue="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="filter_records.last_day"></my-date-picker>
+				  </div>
+				  <label><button (click)="getfilter_data()" class="btn btn-success btn-with-icon" type="button"><i class="fa fa-search"></i></button></label>
+	 </div>
+	<div class="row">
+		<ba-card title="Customer Order Status Details"
+			baCardClass="with-scroll" class="data-table-container">
+		<div class="row filter-search">
+			<div class='col-sm-3'>
+				<input class="form-control" placeholder="Search ..." [(ngModel)]="filterQuery" />
+			</div>
+			<div class='col-sm-3'></div>
+			<div class="offset-sm-3 col-sm-3">
+					 <button (click)="exportToExcel()" class="btn btn-primary btn-with-icon" type="button">Export </button>
+				</div>
+		</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead >
+					<tr>
+						<th style="width: 5%" class="text-center">Image</th>
+						<th class="text-center" style="width: 11%"><mfDefaultSorter
+								by="id_orderdetails">Order No.</mfDefaultSorter></th>
+						<th style="width: 12%" class="text-center"><mfDefaultSorter
+								by="id_product">Product</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="orderdate">Ord Date</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="deliverydate">Del Date</mfDefaultSorter></th>
+						<th style="width: 5%" class="text-center"><mfDefaultSorter
+								by="totalitems">Items</mfDefaultSorter></th>			
+						<th style="width: 5%" class="text-center"><mfDefaultSorter
+								by="weight">Weight</mfDefaultSorter></th>
+						<th style="width: 5%" class="text-center">Size</th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="order_to">Customer</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="employee">Employee</mfDefaultSorter></th>
+						<th style="width: 5%" class="text-center"><mfDefaultSorter
+								by="branch_customer">Branch</mfDefaultSorter></th>
+						<th style="width: 13%" class="text-center"><mfDefaultSorter
+								by="customer_ref_no">Ref No</mfDefaultSorter></th>
+						<th style="width: 17%" class="text-center"><mfDefaultSorter
+								by="orderstatus">Status</mfDefaultSorter></th>
+						<th style="width: 5%" class="text-center"><mfDefaultSorter
+								by="is_customeitem">Cus</mfDefaultSorter></th>
+						 <th style="width: 20%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody class="text-center">
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center"><img src="{{item.image}}" width="40" height="35"></td>
+						<td class="text-center">{{item.orderno}}</td>
+						<td class="text-center">{{item.id_product}}</td>
+						<td class="text-center">{{item.order_date}}</td>
+						<td class="text-center">{{item.deliverydate}}</td>
+						<td class="text-center">{{item.totalitems}}</td>
+						<td class="text-center">{{item.weight}}</td>
+                        <td class="text-center">{{item.size == '' ? '-':item.size}}</td>
+						<td class="text-center">{{item.order_to}}</td>
+						<td class="text-center">{{item.employee}}</td>
+						<td class="text-center">{{item.branch_customer}}</td>
+					    <td class="text-center">{{item.customer_ref_no}}</td>
+						<td class="text-center">{{item.orderstatus}}</td> 
+						<td class="text-center">{{item.is_customeitem}}</td>
+						<td><span *ngIf='item.is_customeitem == "No" && item.customimages?.length ==0'>-</span>
+						<button (click)="orderImage(item.id_orderdetails)" *ngIf='item.is_customeitem == "Yes" && item.customimages?.length >0'
+								class="btn btn-primary btn-icon" type="button" title="View Images">
+								<i class="fa fa-file-image-o"></i>
+						</button></td>
+
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="15"><mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+	<app-modal [title]='title' [showClose]="true"
+		(onClose)="closeImageModal()" #imageModal>
+	<form #categoryimgfrm="ngForm" novalidate>
+		<div class="text-center" ><label style='color:#fff !important;'>Click on the image to download</label></div>
+		<div class="row">
+			<div *ngFor="let url of images;let i = index" class='col-sm-4'>
+				<img style="max-width: 100%;" (click)="downloadImgFile(url)" src="{{url}}"> 
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	 </app-modal>
+	 {{ bindImageModal(imageModal) }}
+	 
+</div></div>

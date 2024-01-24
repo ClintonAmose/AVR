@@ -1,0 +1,312 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<div id="backgroundPopup_1" align="center"  *ngIf="records.length==0"><img src="{{loadingPicture}}" alt="Please Wait..." style="margin-top:150px;width:100px;" /></div>	
+<div id="displaying_1" *ngIf="records.length>0">
+<div class="widgets">
+	<div class="row">
+		<ba-card title="Employee List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+		<div class="row filter-search">
+				<div class='col-sm-3'>
+							<input class="form-control" [(ngModel)]="filterQuery" />
+						</div>
+						<div class='col-sm-3'>
+						</div>
+						<div class="col-sm-3 offset-sm-3">
+				         <a translate (click)="createnewemployeedetails()"><button
+						class="btn btn-primary btn-with-icon" type="button">
+						<i class="ion-plus-round"></i>New Employee
+					   </button></a>
+			            </div>
+		</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy" 
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+					    <th style="width: 5%" class="text-center"><mfDefaultSorter
+								by="firstname">Id</mfDefaultSorter></th>
+						<th style="width: 15%" class="text-center"><mfDefaultSorter
+								by="firstname">Name</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="firstname">Branch</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="mobile">Mobile</mfDefaultSorter></th>
+						<th style="width: 20%" class="text-center"><mfDefaultSorter
+								by="mobile">Email</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="status">Active</mfDefaultSorter></th>
+						<th style="width: 25%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center">{{item.id_employee}}</td>
+						<td class="text-center">{{item.firstname}}</td>
+						<td class="text-center">{{item.branch}}</td>
+						<td class="text-center">{{item.mobile}}</td>
+						<td class="text-center">{{ item.email}}</td>
+						<td class="text-center">{{ item.status=='1'?'Active':'Inactive'}}</td>
+						
+						<td class="text-center"><button
+								class="btn btn-primary btn-icon" type="button"
+								title="Update Credential"
+								(click)="updatelogincredential(item.id_employee)">
+								<i class="ion-unlocked"></i>
+							</button> &nbsp;
+							<button (click)="updateemployeedetails(item.id_employee)"
+								title="Update Personal Info" class="btn btn-primary btn-icon"
+								type="button">
+								<i class="ion-person-stalker"></i>
+							</button> &nbsp;
+							<button (click)="updateimage(item.id_employee)"
+								title="Update Profile Image" class="btn btn-primary btn-icon"
+								type="button">
+								<i class="ion-image"></i>
+							</button> &nbsp;</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="7"><mfBootstrapPaginator
+								[rowsOnPageSet]="[25,50,75]"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+
+	<app-modal [title]='title' [showClose]="true"
+		(onClose)="closecredential()" #credentialModal>
+	<form #credentialfrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="input01">User Name*</label> <input type="text"
+						class="form-control" #UserName="ngModel"
+						[(ngModel)]="employdet.username" name="UserName" autofocus
+						placeholder="User Name" required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Password*</label> <input type="password"
+						class="form-control" #Password="ngModel"
+						[(ngModel)]="employdet.passwd" name="Password"
+						placeholder="Password" required [minLength]="4">
+				</div>
+				<div class="form-group">
+					<div _ngcontent-c10="" class="has-warning checkbox">
+						<label _ngcontent-c10=""
+							class="checkbox-inline custom-checkbox nowrap"> <input
+							_ngcontent-c10="" type="checkbox" value="1" name="Agree"
+							#Agree="ngModel" [(ngModel)]="agree" required> <span
+							_ngcontent-c10="">I'm agree to update new password</span>
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary'
+				(click)="updatecredential(employdet.id_employee)"
+				[disabled]="!credentialfrm.valid || !agree">Update</button>
+			<button class='btn btn-default' (click)="closecredential()">Close</button>
+		</div>
+	</div>
+	</app-modal>
+	{{ bindCredentialModal(credentialModal) }}
+
+	<app-modal [title]='title' [showClose]="true"
+		(onClose)="closeemployeemodal()" #EmployeeModal>
+	<form #employeefrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="input01">Select Branch*</label> <select
+						class="form-control" [(ngModel)]="employdet.id_branch"
+						name="Branch" autofocus #Branch="ngModel" required>
+						<option *ngFor="let br of branches" [value]="br.id_branch"
+							class="list-group-item">{{br.name}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="input01">First Name*</label> <input type="text"
+						class="form-control" #EName="ngModel"
+						[(ngModel)]="employdet.firstname" name="EName"
+						placeholder="Enter Employee Name" required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Last Name</label> <input type="text"
+						class="form-control" #LName="ngModel"
+						[(ngModel)]="employdet.lastname" name="LName"
+						placeholder="Enter Employee Last Name">
+				</div>
+				<div class="form-group">
+					<label for="input01">D.O.B</label>
+					<my-date-picker class="form-control" name="Date_of_Birth"
+						#Date_of_Birth="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="employdet.dob"></my-date-picker>
+				</div>
+				<div class="form-group" style='display:none;'>
+					<label for="input01">Employee Code</label> <input type="text"
+						class="form-control" #ECode="ngModel"
+						[(ngModel)]="employdet.emp_code" name="ECode"
+						placeholder="Enter Employee Code">
+				</div>
+				<div class="form-group">
+					<label for="input01">Select Department*</label> <select
+						class="form-control" [(ngModel)]="employdet.dept"
+						name="Department" #Department="ngModel" required>
+						<option *ngFor="let dep of departments" [value]="dep.id_dept"
+							class="list-group-item">{{dep.name}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="input01">Select Designation*</label> <select
+						class="form-control" [(ngModel)]="employdet.designation"
+						name="Desig" #Desig="ngModel" required>
+						<option *ngFor="let desg of designations" [value]="desg.id_design"
+							class="list-group-item">{{desg.name}}</option>
+					</select>
+				</div>
+				
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="input01">Mobile*</label> <input type="text"
+						class="form-control" #CNumber1="ngModel"
+						[(ngModel)]="employdet.mobile" name="CNumber1"
+						placeholder="Enter Contact Number1" required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Address1*</label> <input type="text"
+						class="form-control" #Address1="ngModel"
+						[(ngModel)]="employdet.address1" name="Address1"
+						placeholder="Address1" required>
+				</div>
+				<div class="form-group" style='display:none;'>
+					<label for="input01">Address2</label> <input type="text"
+						class="form-control" #Address2="ngModel"
+						[(ngModel)]="employdet.address2" name="Address2"
+						placeholder="Address1">
+				</div>
+				<div class="form-group" style='display:none;'>
+					<label for="input01">Address3</label> <input type="text"
+						class="form-control" #Address3="ngModel"
+						[(ngModel)]="employdet.address3" name="Address3"
+						placeholder="Address3">
+				</div>
+				<div class="form-group">
+					<label for="input01">Select Profile*</label> <select
+						class="form-control" [(ngModel)]="employdet.id_profile"
+						name="Profile" #Profile="ngModel" required>
+						<option *ngFor="let pro of profiles" [value]="pro.id_profile"
+							class="list-group-item">{{pro.profile_name}}</option>
+					</select>
+				</div>
+				
+				
+				<div class="form-group">
+					<label for="input01">D.O.J</label>
+					<my-date-picker class="form-control" name="Date_of_Join"
+						#Date_of_Join="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="employdet.doj"></my-date-picker>
+				</div>
+				<div class="form-group">
+					<label for="input01">Email*</label> <input type="email"
+						class="form-control" #emailid="ngModel"
+						[(ngModel)]="employdet.email" name="emailid"
+						placeholder="Email Id" required>
+				</div>
+
+				<div class="form-group" *ngIf="isAddMode" style='display:none;'>
+					<label for="input01">User Name</label> <input type="text"
+						class="form-control" #UName="ngModel"
+						[(ngModel)]="employdet.username" name="UName"
+						placeholder="User Name">
+				</div>
+				<div class="form-group" *ngIf="isAddMode" style='display:none;'>
+					<label for="input01">Password</label> <input type="password"
+						class="form-control" #Password="ngModel" 
+						[(ngModel)]="employdet.passwd" name="Password"
+						placeholder="Password">
+				</div>
+				<div class="form-group">
+					<label for="input01">Status</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="employdet.active" name="status"
+								id="active" value="1"> <span>Active</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"><input
+								type="radio" [(ngModel)]="employdet.active" name="active"
+								id="active" value="2"> <span>Inactive</span>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary'
+				(click)="saveemploydetails(false,false)"
+				[disabled]="!employeefrm.valid" *ngIf="isAddMode">Save &
+				New</button>
+			<button class='btn btn-success'
+				(click)="saveemploydetails(false,true)"
+				[disabled]="!employeefrm.valid" *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect'
+				(click)="saveemploydetails(true,true)"
+				[disabled]="!employeefrm.valid" *ngIf="isEditMode">Save &
+				Close</button>
+			<button class='btn btn-default' (click)="closeemployeemodal()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindEmployeeModal(EmployeeModal) }}
+
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#imageModal>
+	<form #empimgfrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+				<ba-card title="Employee Profile Image" baCardClass="with-scroll">
+				<ba-picture-uploader [picture]="employeeimage.imgurl"
+					[defaultPicture]="defaultPicture"
+					[uploaderOptions]="uploaderOptions"
+					(onUpload)="handleUpload($event)"></ba-picture-uploader> </ba-card>
+				<div class="form-group">
+					<div *ngIf="uploadFile" class="uploadfilelbl">Progress: {{
+						uploadProgress }}%</div>
+					<div *ngIf="uploadFile">
+						<div class="ui indicating olive progress">
+							<div class="bar" [style.width]="uploadProgress + '%'"></div>
+							<div class="label">Uploading file ({{ uploadProgress }}%)</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+	</form>
+	<br />
+	<br />
+	</app-modal>
+	{{ bindImageModal(imageModal) }}
+</div>
+</div>

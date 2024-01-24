@@ -1,0 +1,156 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<div class="widgets" *ngIf="accessData.view == 1">
+	<div class="row">
+		<ba-card title="Die Master List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+	        <div class="row filter-search">
+			    <div class="col-sm-3">
+				 <input class="form-control" placeholder='Search ...' [(ngModel)]="filterQuery" />
+			    </div>
+			    <div class="col-sm-3">
+		        </div>
+			    <div class="col-sm-3 offset-sm-3" *ngIf="accessData.add == 1">
+				 <a translate (click)="createnewdiedetails()"><button
+						class="btn btn-primary btn-with-icon" type="button">
+						<i class="ion-plus-round"></i>New Dies Details
+					</button></a>
+			   </div>
+			</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th style="width: 10%" class="text-center" ><mfDefaultSorter
+								by="iddie">Id</mfDefaultSorter></th>
+						<th style="width: 40%"><mfDefaultSorter
+								by="dierefno">Die Reference</mfDefaultSorter></th>
+						<th style="width: 20%"><mfDefaultSorter
+								by="diestatus">Status</mfDefaultSorter></th>
+						<th style="width: 30%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center">{{item.iddie}}</td>
+						<td>{{item.dierefno}}</td>
+						<td>{{ (item.diestatus == 1) ? 'Active' : 'In Active'}}</td>
+						<td class="text-center">
+							<button (click)="updatedie(item.iddie)" 
+								title="Update Die Info" class="btn btn-primary btn-icon"
+								type="button">
+								<i class="ion-edit"></i>
+							</button> &nbsp;
+							<button (click)="deletedie(item.iddie)" *ngIf="accessData.delete == 1"
+								title="Delete Die" class="btn btn-danger ion-trash-a"
+								type="button"></button>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="4"><mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+
+
+
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#editModal>
+	<form #diefrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="input01">Die Reference No*</label> <input type="text"
+						class="form-control" #DieName="ngModel"
+						[(ngModel)]="diedet.dierefno" name="DieName" autofocus
+						placeholder="Die Reference No" required>
+				</div>
+				
+				<div class="form-group">
+					<label for="input01">Die Pressure</label> <input type="number"
+						class="form-control" #DiePressure="ngModel"
+						[(ngModel)]="diedet.presure" name="DiePressure" 
+						placeholder="Die Pressure Value" >
+				</div>
+				
+				<div class="form-group">
+					<label for="input01">Wax Weight(Grms)</label> <input type="number"
+						class="form-control" #DieWaxWt="ngModel"
+						[(ngModel)]="diedet.waxwt" name="DieWaxWt" 
+						placeholder="Die Wax Weight in grms" >
+				</div>
+				<div class="form-group">
+					<label for="input01">Metal Weight(Grms)</label> <input type="number"
+						class="form-control" #DieMetalWt="ngModel"
+						[(ngModel)]="diedet.metalwt" name="#DieMetalWt" 
+						placeholder="Die Metal Weight in grms" >
+				</div>
+
+				<div class="form-group">
+					<label for="input01">Status</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="diedet.diestatus" name="status"
+								id="active" value="1"> <span>Active</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="diedet.diestatus" name="status"
+								id="inactive" value="0"> <span>Inactive</span>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="saveDie(false,false)"
+				[disabled]="!diefrm.valid || disablesubmit" *ngIf="isAddMode">Save & New</button>
+			<button class='btn btn-success' (click)="saveDie(false,true)"
+				[disabled]="!diefrm.valid || disablesubmit" *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect' (click)="saveDie(true,true)"
+				[disabled]="!diefrm.valid || disablesubmit" *ngIf="isEditMode && accessData.edit == 1">Save & Close</button>
+			<button class='btn btn-default' (click)="close()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindModal(editModal) }}
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#deleteModal>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group deletemsg">Are you sure, you want to
+				delete this die details?</div>
+		</div>
+	</div>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-danger'
+				(click)="removeDie(diedet.iddie)">Delete</button>
+			<button class='btn btn-default' (click)="closedeletepopup()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ binddeleteModal(deleteModal) }}
+
+
+</div>

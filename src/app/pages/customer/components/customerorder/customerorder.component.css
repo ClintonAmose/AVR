@@ -1,0 +1,8 @@
+.detailview label{
+	color:#FFFFFF !important;
+}
+.orderdetail{
+	border-bottom: 1px solid #a0bddd;
+	margin-bottom: 10px;
+    line-height: 1.5;
+}

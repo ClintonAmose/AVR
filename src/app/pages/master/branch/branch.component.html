@@ -1,0 +1,229 @@
+<div id="backgroundPopup_1" align="center"  *ngIf="records.length==0"><img src="{{loadingPicture}}" alt="Please Wait..." style="margin-top:150px;width:100px;" /></div>	
+<div id="displaying_1" *ngIf="records.length>0">
+<div class="widgets">
+	<div class="row">
+		<ba-card title="Branch Details" baCardClass="with-scroll"
+			class="data-table-container">
+		
+		<div class="row filter-search">
+				<div class="col-sm-3">
+					<input class="form-control" [(ngModel)]="filterQuery" />
+				</div>
+				<div class="col-sm-3">
+				</div>
+				<div class="offset-sm-3 col-sm-3">
+					<a translate (click)="createnewbranchdetails()"><button
+						class="btn btn-primary btn-with-icon" type="button">
+						<i class="ion-plus-round"></i>New Branch
+					</button></a>
+				</div>
+			</div>
+		
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="store_number">Store number</mfDefaultSorter></th>
+						<th class="text-center" style="width: 20%"><mfDefaultSorter
+								by="name">Name</mfDefaultSorter></th>
+						<th class="text-center" style="width: 20%"><mfDefaultSorter
+								by="channel_type">Channel type</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="warehouse">Warehouse</mfDefaultSorter></th>
+						<th class="text-center" style="width: 20%"><mfDefaultSorter
+								by="taxgroup">Tax group</mfDefaultSorter></th>
+						<th style="width: 20%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center">{{item.store_number}}</td>
+						<td>{{item.name}}</td>
+						<td>{{item.channel_type}}</td>
+						<td class="text-center">{{item.warehouse}}</td>
+						<td class="text-center">{{item.taxgroup}}</td>
+						<td class="text-center"><button
+								class="btn btn-primary btn-icon" type="button"
+								title="Update Branch" (click)="updatebranch(item.id_branch)">
+								<i class="ion-edit"></i>
+							</button> &nbsp;</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="6"><mfBootstrapPaginator
+								[rowsOnPageSet]="[25,50,75]"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+
+	<app-modal [title]='title' [showClose]="true"
+		(onClose)="closebranchmodal()" #BranchModal>
+	<form #branchfrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="input01">Branch Name*</label> <input type="text"
+						class="form-control" #BName="ngModel" [(ngModel)]="branchdet.name"
+						name="BName" autofocus placeholder="Enter Branch Name" required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Store Number*</label> <input type="text"
+						class="form-control" #ShortName="ngModel"
+						[(ngModel)]="branchdet.short_name" name="ShortName"
+						placeholder="Enter Store Number" required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Channel Type*</label> <select
+						class="form-control" [(ngModel)]="branchdet.channel_type"
+						name="Channel" #Channel="ngModel" required>
+						<option [value]="" class="list-group-item">-Select
+							Channel Type-</option>
+						<option [value]="1" class="list-group-item">Company Store
+						</option>
+						<option [value]="2" class="list-group-item">Franchisee
+							Store</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="input01">Warehouse*</label> <input type="text"
+						class="form-control" #WareHouse="ngModel"
+						[(ngModel)]="branchdet.warehouse" name="WareHouse"
+						placeholder="Enter Warehouse Name" required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Tax Group*</label> <input type="text"
+						class="form-control" #TaxGroup="ngModel"
+						[(ngModel)]="branchdet.taxgroup" name="TaxGroup"
+						placeholder="Enter Tax Group" required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Contact Person*</label> <input type="text"
+						class="form-control" #CPerson="ngModel"
+						[(ngModel)]="branchdet.contactperson" name="CPerson"
+						placeholder="Enter Contact Person Name" required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Contact Number1*</label> <input type="text"
+						class="form-control" #CNumber1="ngModel"
+						[(ngModel)]="branchdet.contactno1" name="CNumber1"
+						placeholder="Enter Contact Number1" required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Contact Number2</label> <input type="text"
+						class="form-control" #CNumber2="ngModel"
+						[(ngModel)]="branchdet.contactno2" name="CNumber2"
+						placeholder="Enter Additional Contact Number">
+				</div>
+				<div class="form-group">
+					<label for="input01">Prefix</label> <input type="text"
+						class="form-control" #prefix="ngModel" [(ngModel)]="branchdet.prefix"
+						name="prefix" autofocus placeholder="Enter Branch Prefix" required>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="input01">Email</label> <input type="email"
+						class="form-control" #emailid="ngModel"
+						[(ngModel)]="branchdet.emailid" name="emailid" autofocus
+						placeholder="Email Id">
+				</div>
+				<div class="form-group">
+					<label for="input01">Address1*</label> <input type="text"
+						class="form-control" #Address1="ngModel"
+						[(ngModel)]="branchdet.address1" name="Address1" autofocus
+						placeholder="Address1" required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Address2</label> <input type="text"
+						class="form-control" #Address2="ngModel"
+						[(ngModel)]="branchdet.address2" name="Address2" autofocus
+						placeholder="Address1">
+				</div>
+				<div class="form-group">
+					<label for="input01">Address3</label> <input type="text"
+						class="form-control" #Address3="ngModel"
+						[(ngModel)]="branchdet.address3" name="Address3" autofocus
+						placeholder="Address3">
+				</div>
+				<div class="form-group">
+					<label for="input01">Country*</label> <select class="form-control"
+						[(ngModel)]="branchdet.id_country" name="country"
+						#country="ngModel" required placeholder="Select Country"
+						(change)="getStateforCountry($event.target.value)">
+						<option *ngFor="let con of countries" [value]="con.id_country"
+							class="list-group-item">{{con.name}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="input01">State*</label> <select class="form-control"
+						[(ngModel)]="branchdet.id_state" name="state" #state="ngModel"
+						required placeholder="Select State"
+						(change)="getCityforState($event.target.value)">
+						<option *ngFor="let st of states" [value]="st.id_state"
+							class="list-group-item">{{st.name}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="input01">City*</label> <select class="form-control"
+						[(ngModel)]="branchdet.id_city" name="city" #city="ngModel"
+						required placeholder="Select City">
+						<option *ngFor="let ct of cities" [value]="ct.id_city"
+							class="list-group-item">{{ct.name}}</option>
+					</select>
+				</div>
+				
+				<div class="form-group">
+					<label for="input01">Status</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="branchdet.active" name="status"
+								id="active" value="1"> <span>Active</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="branchdet.active" name="status"
+								id="inactive" value="0"> <span>Inactive</span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="input01">Colors</label> <input type="text"
+						class="form-control" #colors="ngModel" [(ngModel)]="branchdet.colors"
+						name="colors" autofocus placeholder="Enter Branch Color" required>
+				</div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary'
+				(click)="savebranchdetails(false,false)"
+				[disabled]="!branchfrm.valid" *ngIf="isAddMode">Save & New</button>
+			<button class='btn btn-success'
+				(click)="savebranchdetails(false,true)"
+				[disabled]="!branchfrm.valid" *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect'
+				(click)="savebranchdetails(true,true)" [disabled]="!branchfrm.valid"
+				*ngIf="isEditMode">Save & Close</button>
+			<button class='btn btn-default' (click)="closebranchmodal()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindBranchModal(BranchModal) }}
+</div>
+</div>

@@ -1,0 +1,157 @@
+<div id="backgroundPopup_1" align="center"  *ngIf="records.length==0"><img src="{{loadingPicture}}" alt="Please Wait..." style="margin-top:150px;width:100px;" /></div>	
+<div id="displaying_1" *ngIf="records.length>0">
+<div class="widgets">
+	<div class="row">
+		<ba-card title="General Settings List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+	     <div class="row filter-search">
+				<div class="col-sm-3">
+					<input class="form-control"  placeholder='Search ...'  [(ngModel)]="filterQuery" />
+				</div>
+				<div class="col-sm-3">
+				</div>
+				<div class="offset-sm-3 col-sm-3"  *ngIf="accessData.add==1"><a translate (click)="createnewsizedetails()"><button
+						class="btn btn-primary btn-with-icon" type="button">
+						<i class="ion-plus-round"></i>New Order Manage
+					</button></a>
+				</div>
+			</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th style="width: 10%" class="text-center" ><mfDefaultSorter
+								by="id_stock">Id</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="stock">Customer DeliveryDate</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="stock">Vendor DeliveryDate</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="stock">Vendor DeliveryDate</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="status">Status</mfDefaultSorter></th>
+						<th style="width: 20%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center">{{item.id_ordersettings}}</td>
+						<td class="text-center">{{item.customer_delivery}}</td>
+						<td class="text-center">{{item.karigar_delivery}}</td>
+						<td class="text-center">{{item.delivery_remainder}}</td>
+						<td class="text-center">{{(item.status == 1) ? 'Avaliable' : 'Not Avaliable'}}</td>
+						<td class="text-center"><span  *ngIf="accessData.edit==1">
+							<button (click)="updatordermanage(item.id_ordersettings)"
+								title="Update Settings Info" class="btn btn-primary btn-icon"
+								type="button">
+								<i class="ion-edit"></i>
+							</button></span> &nbsp;<span  *ngIf="accessData.delete==1">
+							<button (click)="deletestock(item.id_ordersettings)" title="Delete Order Manage"
+								class="btn btn-danger ion-trash-a" type="button"></button></span>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="7"><mfBootstrapPaginator
+								[rowsOnPageSet]="[25,50,75]"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#editModal>
+	<form #sizefrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="input01">Customer Delivery Days</label><input type="number"
+						class="form-control" #customer_delivery="ngModel" id="customer_delivery"
+						[(ngModel)]="ordermanagedet.customer_delivery" name="customer_delivery"
+						placeholder="Customer Delivery Days" required>
+					 
+				</div>
+				<div class="form-group">
+					<label for="input01">Karigar Delivery Days</label><input type="number"
+						class="form-control" #karigar_delivery="ngModel" id="karigar_delivery"
+						[(ngModel)]="ordermanagedet.karigar_delivery" name="karigar_delivery"
+						placeholder="Karigar Delivery Days">
+					 
+				</div>
+				<div class="form-group">
+					   <label for="input01">Delivery Remainder Days</label><input type="number"
+						class="form-control" #delivery_remainder="ngModel" id="delivery_remainder"
+						[(ngModel)]="ordermanagedet.delivery_remainder" name="delivery_remainder"
+						placeholder="Karigar Delivery Days" required>
+					 
+				</div>
+				<div class="form-group">
+					<label for="description">Description</label>
+					<textarea class="form-control" id="description"
+						#CatDescription="ngModel" [(ngModel)]="ordermanagedet.description"
+						name="Description" placeholder="Description"></textarea>
+				</div>
+				<div class="form-group">
+				<label for="input01">Status(Order Manage)</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="ordermanagedet.status"  name="type"
+								 value="1"><span>Avaliable</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"><input
+								type="radio" [(ngModel)]="ordermanagedet.status" name="type"
+								value="0"><span>Not Avaliable</span>
+							</label>
+						</div>
+					</div>
+				</div> 
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="saveOrderManage(false,false)"
+				[disabled]="!sizefrm.valid  || disablesubmit" *ngIf="isAddMode">Save & New</button>
+			<button class='btn btn-success' (click)="saveOrderManage(false,true)"
+				[disabled]="!sizefrm.valid  || disablesubmit" *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect' (click)="saveOrderManage(true,true)"
+				[disabled]="!sizefrm.valid  || disablesubmit" *ngIf="isEditMode">Save & Close</button>
+			<button class='btn btn-default' (click)="close()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindModal(editModal) }}
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#deleteModal>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group deletemsg">Are you sure, you want to
+				delete this OrderManage?</div>
+		</div>
+	</div>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-danger'
+				(click)="removesms(ordermanagedet.id_ordersettings)">Delete</button>
+			<button class='btn btn-default' (click)="closedeletepopup()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ binddeleteModal(deleteModal) }}
+</div>
+</div>

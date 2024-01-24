@@ -1,0 +1,227 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<div id="backgroundPopup_1" align="center"  *ngIf="records.length==0"><img src="{{loadingPicture}}" alt="Please Wait..." style="margin-top:150px;width:100px;" /></div>	
+<div id="displaying_1" *ngIf="records.length>0">
+<div class="widgets" *ngIf="accessData.view == 1">
+     <div class="row">
+		            <div class='col-sm-3'>
+			        </div>
+					<label>From:</label>
+					<div class='col-sm-2'>
+					<my-date-picker  name="from_day"
+							#overdue="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="filter_records.from_day"></my-date-picker>
+		           </div>
+				    <label>To:</label>
+				    <div class='col-sm-2'>
+				      <my-date-picker  name="last_day" 
+							#overdue="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="filter_records.last_day"></my-date-picker>
+				  </div>
+				  <label><button (click)="getfilter_data()" class="btn btn-success btn-with-icon" type="button"><i class="fa fa-search"></i></button></label>
+	 </div>
+	<div class="row">
+		<ba-card title="Customer Order Details" baCardClass="with-scroll"
+			class="data-table-container">
+		<div class="row filter-search">
+		 <div class='col-sm-3'>
+				<input class="form-control" placeholder="Search ..." [(ngModel)]="filterQuery" />
+		 </div>
+		 <div class='col-sm-3'>
+		</div>
+		<div class="col-sm-3 offset-sm-3">
+				      <!-- <a translate (click)="createnewbranchdetails()"><button
+						class="btn btn-primary btn-with-icon" type="button">
+						<i class="ion-plus-round"></i>New User
+					</button></a> -->
+		 </div>
+		</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" 
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="id_customerorder">Order Id</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="id_customerorder">Order No</mfDefaultSorter></th>
+						<th style="width: 10%"><mfDefaultSorter
+								by="order_to">Customer</mfDefaultSorter></th>
+						<th style="width: 10%"><mfDefaultSorter
+								by="employee">Employee</mfDefaultSorter></th>
+						<th style="width: 10%"><mfDefaultSorter
+								by="mobile">Mobile</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="order_date">Order Date</mfDefaultSorter></th>
+						 <th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="branch_customer">Branch</mfDefaultSorter></th>
+						<th  class="text-center" style="width: 10%"><mfDefaultSorter
+								by="order_status">Status</mfDefaultSorter></th>
+						<th style="width: 20%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody  >
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center">{{item.id_customerorder}}</td>
+						<td class="text-center">{{item.orderno}}</td>
+						<td>{{item.order_to}}</td>
+						<td>{{item.employee}}</td>
+						<td>{{item.mobile!=''?item.mobile:'-'}}</td>
+						<td class="text-center">{{item.order_date}}</td>
+						<td class="text-center">{{item.branch_customer}}</td>
+						<td class="text-center">{{item.orderstatus}}</td>
+						<td class="text-center"><button
+								class="btn btn-primary btn-icon" type="button"
+								title="View Order Details"
+								(click)="vieworderdetails(item.id_orderdetails)">
+								<i class="ion-clipboard"></i>
+							</button> &nbsp;<a target="blank" href="https://api.whatsapp.com/send?phone=91{{item.mobile}}&text=Hello Mr. {{item.order_to}} Greetings From Jai Gulab Dev Jewellers.Your Order {{item.orderno}} Has been received and Your Order Status is {{item.orderstatus}}."><button
+	                    class="btn btn-success btn-with-icon" type="button">
+	                    <i class="fa fa-whatsapp"></i>
+	                   </button></a>&nbsp;</td> 
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="9"><mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+
+	<app-modal [title]='title' [showClose]="true"
+		(onClose)="closeorderdetailmodal()" #OrderDetailsModal>
+	<form #branchfrm="ngForm" class="detailview" novalidate>
+		<div class="row orderdetail" *ngFor="let orderdetail of orderdetails">
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-6">
+						<label>Order Number</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.orderno}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Order Type</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.ortertype}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Is Custom Item</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.is_customeitem}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Product Name</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.id_product}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Total Qty</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.totalitems}}</label>
+					</div>
+				</div>
+				<!-- <div class="row">
+					<div class="col-md-6">
+						<label>Urgent Order</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.is_urgent}}</label>
+					</div>
+				</div> -->
+				<div class="row">
+					<div class="col-md-6">
+						<label>Delivery Date</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.deliverydate}}</label>
+					</div>
+				</div>
+				<div class="row" style="display:none;">
+					<div class="col-md-6">
+						<label>Karigar</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.deliverydate}}</label>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-6">
+						<label>Image</label>
+						<button  (click)="downloadImgFile(orderdetail.image)"
+							class="btn btn-warning btn-with-icon" type="button">Download
+						</button>
+					</div>
+					<div class="col-md-6">
+						<img style="max-width: 100%;" src="{{orderdetail.image}}"  >
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-md-6">
+						<label>Description</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.description}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Order Status</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.orderstatus}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Purity</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.purity}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Size or Length</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.size}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Weight(g)</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.weight}}</label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	</app-modal>
+	{{ bindOrderDetailModal(OrderDetailsModal) }}
+
+</div></div>

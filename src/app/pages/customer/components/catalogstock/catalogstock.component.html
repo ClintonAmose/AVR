@@ -1,0 +1,300 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<div id="backgroundPopup_1" align="center"  *ngIf="records.length==0"><img src="{{loadingPicture}}" alt="Please Wait..." style="margin-top:150px;width:100px;" /></div>	
+<div id="displaying_1" *ngIf="records.length>0">
+<div class="widgets" *ngIf="accessData.view == 1">
+     <div class="row">
+		            <div class='col-sm-3'>
+			        </div>
+					<label>From:</label>
+					<div class='col-sm-2'>
+					<my-date-picker  name="from_day"
+							#overdue="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="filter_records.from_day"></my-date-picker>
+		           </div>
+				    <label>To:</label>
+				    <div class='col-sm-2'>
+				      <my-date-picker  name="last_day" 
+							#overdue="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="filter_records.last_day"></my-date-picker>
+				  </div>
+				  <label><button (click)="getfilter_data()" class="btn btn-success btn-with-icon" type="button"><i class="fa fa-search"></i></button></label>
+	 </div>
+	<div class="row">
+		<ba-card title="Catalog Stock Order List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+	     <div class="row filter-search">
+				<div class="col-sm-2">
+					<input class="form-control" placeholder='Search ...' [(ngModel)]="filterQuery" />
+				</div>
+				<div class="col-sm-2" *ngIf="accessData.edit == 1" >
+						<select class="form-control input-sm"
+						[(ngModel)]="assignvendor" name="assignvendor" #AssignVendor="ngModel"
+						required placeholder="Assign Order To Karigar">
+						<option value=""> - Assign Order To Karigar - </option>
+						<option *ngFor="let vendor of vendors" [value]="vendor.id_karigar"
+							class="list-group-item">{{vendor.firstname}}</option>
+					</select>
+				</div>
+				<div class="col-sm-2" *ngIf="accessData.edit == 1" >
+						<div class="text-right">
+							<select class="form-control input-sm"
+								[(ngModel)]="assignbranch" name="assignbranch" #AssignBranch="ngModel"
+								required placeholder="Select Branch">
+								<option value=""> - Select Branch - </option>
+								<option *ngFor="let  branch of branches" [value]="branch.id_branch"
+									class="list-group-item">{{branch.name}}</option>
+							</select>
+						</div>
+			     </div>
+				 <div class="col-sm-2" *ngIf="accessData.edit == 1" >
+						<label  class="form-control" style="border:none;background:inherit;">Instock Weight - {{smallweight}}</label>
+				</div>
+				 <div class="col-sm-2" *ngIf="accessData.edit == 1" >
+						<a translate (click)="assignordertobranch()"><button
+								class="btn btn-primary btn-with-icon" type="button">
+								<i class="ion-checkmark-circled"></i>Assign
+							</button></a>
+				</div>
+				<div class="col-sm-2" *ngIf="accessData.edit == 1" >
+						<div>
+							<a translate (click)="rejectcustomerorder()"><button
+									class="btn btn-danger btn-with-icon" type="button">
+									<i class="ion-checkmark-circled"></i>Reject
+								</button></a>
+						</div>
+			      </div>
+
+			</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+					    <th class="text-center" style="width: 1%"></th>
+						<th style="width: 5%" class="text-center">Image</th>
+						<th class="text-center" style="width: 11%"><mfDefaultSorter
+								by="orderno">Order No.</mfDefaultSorter></th>
+						<th style="width: 12%" class="text-center"><mfDefaultSorter
+								by="id_product">Product</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="deliverydate">Del Date</mfDefaultSorter></th>
+						<th style="width: 5%" class="text-center"><mfDefaultSorter
+								by="totalitems">Items</mfDefaultSorter></th>
+						<th style="width: 5%" class="text-center"><mfDefaultSorter
+								by="weight">Weight</mfDefaultSorter></th>
+						<th style="width: 5%" class="text-center"><mfDefaultSorter
+								by="size">Size</mfDefaultSorter></th>
+						<!-- <th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="available_branch">AvailBranch</mfDefaultSorter></th>
+						<th style="width: 5%" class="text-center">Branch Stk</th>
+						<th style="width: 5%" class="text-center">Avail Stk</th>
+						<th style="width: 5%" class="text-center">Parital Stk</th> -->
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="order_to">Customer</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="order_to">Employee</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="branch_customer">Branch</mfDefaultSorter></th>
+						<th style="width: 18%" class="text-center"><mfDefaultSorter
+							by="total_stock">Stock</mfDefaultSorter></th>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data" [style.background-color]="item.colors">
+					   <td class="text-center">
+					   <span><input type="checkbox"
+						[value]="item.isChecked" [checked]="item.isChecked"
+					   (change)="$event.target.checked ? item.isChecked = true : item.isChecked = false"></span>
+					   <label *ngIf="item.total_stock ==0"></label></td>
+						<td class="text-center"><img src="{{item.image}}" width="40" height="35"
+						 (click)="orderImage(item.id_orderdetails)"></td>
+						<td class="text-center">{{item.orderno}}</td>
+						<td class="text-center">{{item.itemname}}</td>
+						<td class="text-center">{{item.deliverydate}}</td>
+						<td class="text-center">{{item.totalitems}}</td>
+						<td class="text-center">{{item.weight}}</td>
+						<td class="text-center">{{item.size == '' ? '-':item.size}}</td>
+						<!-- td class="text-center"><span *ngIf="item.available_branch.length>0"><select class="form-control" placeholder="Select Branch" (change)="branch_wise($event.target.value,item)" 
+						style='text-align:center;height:34px;'>
+						  <option value="">- Select -</option>
+						<option *ngFor="let brach of item.available_branch" [value]="brach.id_branch"
+							class="list-group-item">{{brach.branch}}</option>
+				        </select></span ><span *ngIf="item.available_branch.length==0">-</span></td>
+						<td class="text-center">{{item.branch_stock}}</td>
+						<td class="text-center">{{item.total_stock}}</td>
+						<td class="text-center"><span *ngIf="item.total_stock>0"><input type="text" class="form-control" [(ngModel)]="item.add_stock" name="add_stock" placeholder="Qty"
+						(keyup)="stock_addprocess($event,item)" width="4px;"style='text-align:center;height:30px;'></span><span *ngIf="item.available_branch.length==0">-</span></td> -->
+						<td class="text-center">{{item.order_to}}</td>
+						<td class="text-center">{{item.employee}}</td>
+						<td class="text-center">{{item.branch_customer}}</td>
+						
+						<td class="text-center">
+						 <span *ngIf="item.total_stock !=0 && item.total_stock >= item.totalitems"><button (click)="orderstock(item.id_orderdetails)"
+						 class="btn btn-primary btn-icon" type="button" title="Stock">In Stock</button></span><label *ngIf="item.total_stock == 0 || item.total_stock < item.totalitems">Out of Stock</label></td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="16"><mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#editModal>
+	<form #stockfrm="ngForm"  class="detailview" style="color:white;" novalidate>
+		<div class="row orderdetail" *ngFor="let orderdetail of orderdetails">
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-6">
+						<label>Order Number</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.orderno}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Order Type</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.ortertype}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Product Code</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.id_product}}</label>
+					</div>
+				</div>
+				<!-- <div class="row">
+					<div class="col-md-6">
+						<label>Available Sku Weight</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.total_stock}}</label>
+					</div>
+				</div> -->
+				<div class="row">
+					<div class="col-md-6">
+						<label>Size/Length</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.sizeorlen}}</label>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-6">
+						<label>Purity</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.purity}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Weight(g)</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.weight}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Product Name</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.itemname}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Order Qty</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.totalitems}}</label>
+					</div>
+				</div>
+			</div>
+			<br/>
+			<h4 align="center">Stock Detail</h4>
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-6">
+						<label>Total Avail Stock</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{orderdetail.total_stock}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Branch Stock</label>
+					</div>
+					<div class="col-md-6">
+						<label>{{branch_stock}}</label>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-12">
+						<label>Available Branch</label>
+					</div>
+					<div class="col-md-12">
+						<select class="form-control input-sm"
+							[(ngModel)]="available_branch" name="available_branch" #AvailBranch="ngModel" (click)="change_branch_stock(orderdetail.available_branch)"
+							required placeholder="Select branch">
+							<option value=""> - Select branch - </option>
+							<option *ngFor="let branch of orderdetail.available_branch" [value]="branch.id_branch"
+								class="list-group-item"  >{{branch.branch}}</option> <!-- branch.branch_stock > orderdetail.total_stock -->
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+
+	<div class="mfoot" *ngIf="!isloading">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-success' (click)="assignbranchorder(1,false,true)"
+				[disabled]="!stockfrm.valid " *ngIf="!isEditMode && accessData.edit == 1 && branch_stock > 0">Allocate Order</button>
+			<button class='btn btn-danger' (click)="assignbranchorder(2,false,true)"
+				[disabled]="!stockfrm.valid" *ngIf="!isEditMode && accessData.edit == 1 && branch_stock==0">Create Job</button>
+			<button class='btn btn-fabkinect' (click)="assignbranchorder(true,true)"
+				[disabled]="!stockfrm.valid" *ngIf="isEditMode && accessData.edit == 1">Allocate Order</button>
+			<button class='btn btn-default' (click)="close()">Close</button>
+		</div>
+	</div>
+	</app-modal>
+	{{ bindModal(editModal) }}
+
+     <app-modal [title]='title' [showClose]="true"
+		(onClose)="closeimage()" #imageModal width="50%">
+	<form #categoryimgfrm="ngForm" novalidate>
+	 <div class="text-center white">Click on the image to download</div> 
+		<div class="row">
+			<div *ngFor="let url of images;let i = index" class='col-sm-12'>
+				<img style="max-width:100%;max-width:1;" (click)="downloadImgFile(url)" src="{{url}}">
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	 </app-modal>
+	 {{ bindImageModal(imageModal) }}
+
+
+</div>
+</div>

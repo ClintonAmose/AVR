@@ -1,0 +1,63 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<div class="widgets" *ngIf="accessData.view == 1">
+	<div class="row">
+		<ba-card title="Rejected Vendors List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+	     <div class="row filter-search">
+				<div class="col-sm-3">
+					<input class="form-control" [(ngModel)]="filterQuery" />
+				</div>
+				<div class="col-sm-3">
+				</div>
+				<div class="offset-sm-3 col-sm-3">
+				</div>
+			</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th style="width: 10%" class="text-center">Image</th>
+						<th class="text-center" style="width: 11%"><mfDefaultSorter
+								by="orderno">Order No.</mfDefaultSorter></th>
+						<th style="width: 7%" class="text-center"><mfDefaultSorter
+								by="status">Product</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="status">Del Date</mfDefaultSorter></th>		
+						<th style="width: 10%" class="text-center">Weight</th>
+						<!-- <th style="width: 10%" class="text-center">Order From</th> -->
+						<th style="width: 10%" class="text-center">Customer</th>
+						<!-- <th style="width: 5%" class="text-center">Rate</th> -->
+						<th style="width: 5%" class="text-center">Total Items</th>
+						<th style="width: 15%" class="text-center">Status</th>
+						<th style="width: 18%" class="text-center">Custom Order</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center"><img src="{{item.image}}" width="40" height="35"></td>
+						<td class="text-center">{{item.orderno}}</td>
+						<td class="text-center">{{item.id_product}}</td>
+						<td class="text-center">{{item.deliverydate}}</td>
+						<td class="text-center">{{item.weight}}</td>
+						<!-- <td class="text-center">{{item.order_for}}</td> -->
+						<td class="text-center">{{item.order_to}}</td>
+						<!-- <td class="text-center">{{item.rate}}</td> -->
+						<td class="text-center">{{item.totalitems}}</td>
+						<td class="text-center">{{item.orderstatus}}</td>
+						<td class="text-center">{{item.is_customeitem}}</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="11"><mfBootstrapPaginator
+								[rowsOnPageSet]="[25,50,75]"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+</div>

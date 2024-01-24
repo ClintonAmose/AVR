@@ -1,0 +1,154 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<div id="backgroundPopup_1" align="center"  *ngIf="records.length==0"><img src="{{defaultPicture}}" alt="Please Wait..." style="margin-top:150px;width:100px;" /></div>	
+<div id="displaying_1" *ngIf="records.length>0">
+<div class="widgets" *ngIf="accessData.view == 1">
+	<div class="row">
+		<ba-card title="Style List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+		<div class="row filter-search">
+				<div class='col-sm-3'>
+							<input class="form-control" placeholder='Search ...' [(ngModel)]="filterQuery" />
+						</div>
+						<div class='col-sm-3'>
+						</div>
+						<div class="col-sm-3 offset-sm-3" *ngIf="accessData.add == 1" >
+				         <a translate (click)="createnewstyledetails()"><button
+						class="btn btn-primary btn-with-icon" type="button">
+						<i class="ion-plus-round"></i>New Style
+					     </button></a>
+			            </div>
+		</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+						<th style="width: 10%" class="text-center" ><mfDefaultSorter
+								by="id_style">Id</mfDefaultSorter></th>
+						<th style="width: 20%" ><mfDefaultSorter
+								by="code_style">Code</mfDefaultSorter></th>
+						<th style="width: 30%" ><mfDefaultSorter
+								by="name_style">Style</mfDefaultSorter></th>
+						<th style="width: 10%" ><mfDefaultSorter
+								by="status_style">Status</mfDefaultSorter></th>
+						<th style="width: 20%" class="text-center" *ngIf="accessData.edit == 1 || accessData.delete == 1 " >Option</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data">
+						<td class="text-center">{{item.id_style}}</td>
+						<td >{{item.code_style}}</td>
+						<td>{{item.name_style}}</td>
+						<td>{{ (item.status_style == 1) ? 'Active' : 'In Active'}}</td>
+						<td class="text-center" *ngIf="accessData.edit == 1 || accessData.delete == 1 " >
+							<button (click)="updatestyle(item.id_style)" *ngIf="accessData.edit == 1"
+								title="Update Style Info" class="btn btn-primary btn-icon"
+								type="button">
+								<i class="ion-edit"></i>
+							</button> &nbsp;
+							<button (click)="deletestyle(item.id_style)" *ngIf="accessData.delete == 1 "
+								title="Delete Style" class="btn btn-danger ion-trash-a"
+								type="button"></button>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="5"><mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+
+
+
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#editModal>
+	<form #deptfrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="input01">Style Name*</label> <input type="text"
+						class="form-control" #StyleName="ngModel"
+						[(ngModel)]="styledet.name_style" name="StyleName" autofocus
+						placeholder="Style Name" required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Style Code*<span class="hint"> (Code should be unique)</span></label> <input type="text"
+						class="form-control" #StyleCode="ngModel"
+						[(ngModel)]="styledet.code_style" name="StyleCode"
+						placeholder="Style Code" required>
+						
+				</div>
+				<div class="form-group">
+					<label for="description">Description</label>
+					<textarea class="form-control" id="description"
+						#CatDescription="ngModel" [(ngModel)]="styledet.desc_style"
+						name="CatDescription" placeholder="Category Description"></textarea>
+				</div>
+
+				<div class="form-group">
+					<label for="input01">Status</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="styledet.status_style" name="status"
+								id="active" value="1"> <span>Active</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="styledet.status_style" name="status"
+								id="inactive" value="0"> <span>Inactive</span>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="saveStyle(false,false)"
+				[disabled]="!deptfrm.valid || disablesubmit" *ngIf="isAddMode">Save & New</button>
+			<button class='btn btn-success' (click)="saveStyle(false,true)"
+				[disabled]="!deptfrm.valid || disablesubmit" *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect' (click)="saveStyle(true,true)"
+				[disabled]="!deptfrm.valid || disablesubmit" *ngIf="isEditMode">Save & Close</button>
+			<button class='btn btn-default' (click)="close()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindModal(editModal) }}
+	<app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#deleteModal>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group deletemsg">Are you sure, you want to
+				delete this style?</div>
+		</div>
+	</div>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-danger'
+				(click)="removeStyle(styledet.id_style)">Delete</button>
+			<button class='btn btn-default' (click)="closedeletepopup()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ binddeleteModal(deleteModal) }}
+
+
+</div></div>

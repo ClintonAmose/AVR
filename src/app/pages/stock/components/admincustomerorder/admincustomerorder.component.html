@@ -1,0 +1,343 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<div id="backgroundPopup_1" align="center"  *ngIf="records.length==0"><img src="{{loadingPicture}}" alt="Please Wait..." style="margin-top:150px;width:100px;" /></div>	
+<div id="displaying_1" *ngIf="records.length>0">
+<div class="widgets" >
+    <div class="row">
+		            <div class='col-sm-3'>
+			        </div>
+					<label>From:</label>
+					<div class='col-sm-2'>
+					<my-date-picker  name="from_day"
+							#overdue="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="filter_records.from_day"></my-date-picker>
+		           </div>
+				    <label>To:</label>
+				    <div class='col-sm-2'>
+				      <my-date-picker  name="last_day" 
+							#overdue="ngModel" [options]="myDatePickerOptions"
+						[(ngModel)]="filter_records.last_day"></my-date-picker>
+				  </div>
+				  <label><button (click)="getfilter_data()" class="btn btn-success btn-with-icon" type="button"><i class="fa fa-search"></i></button></label>
+	 </div>
+	<div class="row">
+		<ba-card title="Admin Customer Order List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+		<div class="row filter-search">
+			<div class="col-sm-3">
+				<input class="form-control" placeholder='Search ...' [(ngModel)]="filterQuery" />
+			</div>
+
+			 <div class="col-sm-2">
+						<select class="form-control input-sm" #otype (change)="ordertypeFilter($event.target.value)"
+							name="ordertypefilter"  placeholder="Show all order">
+								<option value=""> - Show all order - </option>
+								<option  value="1"
+									class="list-group-item">InStock Order</option>
+								<option  value="No"
+									class="list-group-item">Catalog Order - OOS</option>
+								<option  value="Yes"
+									class="list-group-item">Custom Order</option>
+						</select>
+			</div>
+			 <div class="col-sm-3 offset-sm-1" *ngIf="accessData.add == 1" >
+				<a translate (click)="createadminorderdetails()"><button
+						class="btn btn-primary btn-with-icon" type="button">
+						<i class="ion-plus-round"></i>New Order
+					</button></a>
+			</div>
+			<div class="col-sm-3"  *ngIf="accessData.add == 1">
+					<a routerLink="/pages/stock/customerbulkorder" translate><button
+						class="btn btn-success btn-with-icon" type="button">
+						<i class="fa fa-arrow-circle-right"></i>Bulk orders
+					</button></a>
+	             </div>
+		</div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" >
+				<thead>
+					<tr>
+						<th class="text-center" style="width: 3%">Image</th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="id_orderdetails">Order No.</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="order_to">Customer</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="order_to">Cus Ref No</mfDefaultSorter></th>
+						<th class="text-center" style="width: 20%"><mfDefaultSorter
+								by="id_product">Item</mfDefaultSorter></th>
+						<th class="text-center" style="width: 5%"><mfDefaultSorter
+								by="totalitems">Qty</mfDefaultSorter></th>
+						<th class="text-center" style="width: 5%"><mfDefaultSorter
+								by="weight">Weight</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="order_date">Order Date</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="deliverydate">Del Date</mfDefaultSorter></th>
+						<th class="text-center" style="width: 10%"><mfDefaultSorter
+								by="due_date">Due Date</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="vendors">Employee</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="orderstatus">Status</mfDefaultSorter></th>
+						<th style="width: 20%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of mf.data" [style.background-color]="item.colors">
+						<td class="text-center"><img (click)='downloadImgFile(item.image)' src="{{item.image}}"  width="40" height="35">
+						<div (click)="orderImage(item.id_orderdetails)" *ngIf='item.is_customeitem == "Yes" && item.customimages?.length >0'>View</div></td>
+						<td class="text-center">{{item.orderno}}</td>
+						<td>{{item.order_to}}</td>
+						<td class="text-center">{{item.customer_ref_no}}</td>
+						<td class="text-center">{{item.productname}}</td>
+						<td class="text-center">{{item.totalitems}}</td>
+						<td>{{item.weight}}</td>
+						<td class="text-center">{{item.order_date1}}</td>
+						<td class="text-center">{{item.deliverydate}}</td>
+						<td class="text-center">{{item.due_date}}</td>
+					    <td>{{item.employee}}</td>
+						<td>{{item.orderstatus}}</td>
+						<td><button class="btn btn-primary btn-icon" type="button"
+								title="Edit Order Details"
+								(click)="vieworderdetails(item.id_orderdetails,item)">
+							<i class="ion-edit"></i>
+							</button></td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="13"><mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+     </div>
+
+	 <app-modal [title]='title' [showClose]="true" (onClose)="close()"
+		#editModal>
+	<form #designbomformation="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-12">
+			      <div class="form-group">
+					<label for="input01">Order Type</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"><input
+								type="radio" [(ngModel)]="adminorderdetails.is_customeitem" name="is_customeitem"
+								 value="0"><span>CATALOG ORDER</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"><input
+								type="radio" [(ngModel)]="adminorderdetails.is_customeitem" name="is_customeitem"
+								 value="1"><span>CUSTOM ORDER</span>
+							</label>
+						</div>
+					</div>
+				</div>
+			      <div class="form-group" *ngIf="adminorderdetails.is_customeitem==0">
+				  <label for="input01">Design*</label> 
+				       <div class="row">
+					         <div class="col-md-6">
+								<ng2-completer #remoteDataExample name="name"
+								class="completer-limit" [(ngModel)]="adminorderdetails.name"
+								[datasource]="itemsRemote" [minSearchLength]="3"
+								[placeholder]="'Search for Design'"
+								(selected)="onRawdesignSelected($event);"
+								[matchClass]="'match'"
+								[inputClass]="'form-control name'"
+								[textSearching]="'Please wait...'" ></ng2-completer>
+								</div>
+								<div class="col-md-6">
+								   <img src="{{adminorderdetails.prodefaultimg}}"  width="140" height="135">
+								</div> 
+						</div>
+					</div>
+					<div class="form-group" *ngIf="adminorderdetails.is_customeitem==1">
+				     <label for="input01">Customer Reference Number</label> 
+					    <input type="text" class="form-control" #MinWt="ngModel"
+						  [(ngModel)]="adminorderdetails.customer_ref_no" name="customer_ref_no"
+						   placeholder="Customer Reference Number">
+					</div> 
+					<div class="form-group" *ngIf="adminorderdetails.is_customeitem==1">
+					 <label for="input01">Design</label> 
+					<div class="row">
+						   <div class='col-md-6'>
+								<input type="text" class="form-control" 
+									[(ngModel)]="adminorderdetails.name" name="name"
+									placeholder="Design Name">
+						  </div>
+						  <div class='col-md-6'>
+							<ba-card>
+								 <ba-picture-uploader [picture]="adminorderdetails.productimgdetails" 
+								[uploaderOptions]="uploaderOptions" [defaultPicture]="defaultPicture"
+								(onUpload)="handleUpload($event)" ></ba-picture-uploader>
+								<div class="form-group">
+										<div *ngIf="uploadFile" class="uploadfilelbl">Progress: {{
+											uploadProgress }}%</div>
+										<div *ngIf="uploadFile">
+											<div class="ui indicating olive progress">
+												<div class="bar" [style.width]="uploadProgress + '%'"></div>
+												<div class="label">Uploading file ({{ uploadProgress }}%)</div>
+											</div>
+										</div>
+								  </div>
+							  </ba-card>
+						  </div>
+					 </div>
+			      </div>
+				  <div class="form-group" *ngIf="adminorderdetails.is_customeitem==1">
+					<div class="row" *ngIf="order_images?.length > 0">
+					 <label for="input01">Custom Order Images</label>
+					<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage">
+						<thead>
+							<tr style="color:white;">
+								<th class="text-center" style="width: 17%;">S.No</th>
+								<th class="text-center" style="width: 17%;">Custom Order Images</th>
+								<th class="text-center" style="width: 7%;">Status</th>
+							</tr>
+						</thead>
+						<tbody style='color:white;'>
+							<tr *ngFor="let design_order of order_images;let i = index">
+							   <td class="text-center">{{i+1}}</td>
+							   <td class="text-center"><img src="{{design_order.order_images}}"  width="60" height="55"></td>
+							   <td class="text-center"><button class="btn btn-danger btn-with-icon" type="button" (click)="remove_design($event,design_order)">Remove</button></td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="5"><mfBootstrapPaginator
+										[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+							</tr>
+						</tfoot>
+			        </table>
+					</div>
+				  </div>
+					<div class="form-group">
+					 <label for="input01">Customer*</label>
+					   <ng2-completer #remoteDataExample name="customerid"
+							class="completer-limit" [(ngModel)]="adminorderdetails.customerid"
+							[datasource]="cusotmersRemote" [minSearchLength]="3"
+							(selected)="onRawcustomerSelected($event);"
+							[placeholder]="'Search for Customer'"
+							[matchClass]="'match'"
+							[inputClass]="'form-control firstname'"
+							[textSearching]="'Please wait...'" ></ng2-completer>
+				   </div>
+				   <div class="form-group">
+					 <label for="input01">Order Taken</label>
+					   <ng2-completer #remoteDataExample name="employee"
+							class="completer-limit" [(ngModel)]="adminorderdetails.employee"
+							[datasource]="employeeRemote" [minSearchLength]="3"
+							(selected)="onEmployeeSelected($event);"
+							[placeholder]="'Search for Employee'"
+							[matchClass]="'match'"
+							[inputClass]="'form-control firstname'"
+							[textSearching]="'Please wait...'" ></ng2-completer>
+				   </div>
+				   
+			        <div class="form-group">
+						 <label for="qty">Qty*</label>
+						 <input type="text" class="form-control" #qty="ngModel" [(ngModel)]="adminorderdetails.qty" (keypress)="qty_keyPress($event)" name="Qty" placeholder="Pieces / Sets / Pairs" required>
+					</div>
+                    <div class="form-group">
+						<label for="input01">Purity</label><select class="form-control"
+						name="Purity" [(ngModel)]="adminorderdetails.id_purity" required>
+						<option *ngFor="let pur of purities" [value]="pur.id_purity" class="list-group-item">{{pur.purity}}</option>
+						</select>
+				    </div>
+					<div class="form-group">
+					 <label for="options">Size</label><input type="text"
+						class="form-control" #MinWt="ngModel"
+						[(ngModel)]="adminorderdetails.sizeorlen" name="sizeorlen"
+						placeholder="Size(Inch)">
+			       </div>
+					<div class="form-group">
+						 <label for="options">Weight(Grms)</label><input type="number"
+							class="form-control" #MinWt="ngModel"
+							[(ngModel)]="adminorderdetails.reqweight" name="reqweight"
+							placeholder="Weight(grms)">
+				   </div>
+				   <div class="form-group">
+							<label for="input01">Order Date</label>
+							<my-date-picker class="form-control" name="orderdate"
+								#overdue="ngModel" [options]="myDatePickerOptions"
+								[(ngModel)]="adminorderdetails.orderdate"></my-date-picker>
+						</div>
+				   <div class="form-group" *ngIf="adminorderdetails.is_chain == 1">
+				    <label for="options">Hook Type</label>
+						   <div class="input-demo radio-demo row">
+								<div class="col-md-4" *ngIf="adminorderdetails.s_hook_type == 1">
+									<input type='radio' name='hook_type' [(ngModel)]="adminorderdetails.hook_type" value="1"/><label>S Type</label>
+							  </div>
+								<div class="col-md-4"  *ngIf="adminorderdetails.m_hook_type == 1">
+									<input type='radio' name='hook_type' [(ngModel)]="adminorderdetails.hook_type" value="2"/><label>M Type</label>
+								</div>
+						   </div>
+			     </div>
+				   <div class="form-group"  *ngIf="adminorderdetails.is_customeitem==0 && stock_manages==1">
+						<label for="input01">Order Stock Status</label>
+						<div class="input-demo radio-demo row">
+							<div class="col-md-4">
+								<label class="radio-inline custom-radio nowrap"> <input
+									type="radio" [(ngModel)]="adminorderdetails.is_stock_avail" name="is_stockdelivery"
+									 value="1"><span>InStock</span>
+								</label>
+							</div>
+							<div class="col-md-4">
+								<label class="radio-inline custom-radio nowrap"> <input
+									type="radio" [(ngModel)]="adminorderdetails.is_stock_avail" name="is_stockdelivery"
+									 value="0"><span>OutStock</span>
+								</label>
+							</div>
+						</div>
+					</div>
+       				<div class="form-group" style="display:none;">
+						<label for="input01">karigar*</label><select class="form-control"
+						name="id_karigar" [(ngModel)]="adminorderdetails.id_karigar">
+						<option *ngFor="let ven of vendors" [value]="ven.id_karigar" class="list-group-item">{{ven.firstname}}</option>
+						</select>
+					</div>
+					<div class="form-group" *ngIf="adminorderdetails.is_customeitem==1">
+							<label for="input01">Due Date</label>
+							<my-date-picker class="form-control" name="overdue"
+								#overdue="ngModel" [options]="myDatePickerOptions"
+								[(ngModel)]="adminorderdetails.overdue"></my-date-picker>
+						</div>
+                    <div class="form-group">
+						 <label for="options">Remarks</label><input type="tezt"
+						class="form-control" #MinWt="ngModel"
+						[(ngModel)]="adminorderdetails.remarks" name="Remarks"
+						placeholder="Remarks">
+					</div>
+			</div>
+		 </div>
+	</form>
+	<br />
+	<br />
+     <div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="saveAdminorder(false,false)"
+				[disabled]="!designbomformation.valid" *ngIf="isAddMode">Save & New</button>
+			<button class='btn btn-success' (click)="saveAdminorder(false,true)"
+				[disabled]="!designbomformation.valid" *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect' (click)="saveAdminorder(true,true)"
+				[disabled]="!designbomformation.valid" *ngIf="isEditMode && accessData.edit == 1">Save & Close</button>
+			<button class='btn btn-default' (click)="model_close()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ bindModal(editModal) }}
+
+
+
+</div>
+</div>

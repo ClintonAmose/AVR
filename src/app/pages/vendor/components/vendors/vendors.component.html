@@ -1,0 +1,273 @@
+<div class="row padding" *ngIf="accessData.view == 0" ><div class="col-md-12" style="margin-top: 5%;text-align: center; font-size: larger;">SORRY !! You don't have access to this page , Contact admin to activate.</div></div>
+<div id="backgroundPopup_1" align="center"  *ngIf="records.length==0"><img src="{{loadingPicture}}" alt="Please Wait..." style="margin-top:150px;width:100px;" /></div>	
+<div id="displaying_1" *ngIf="records.length>0">
+<div class="widgets" *ngIf="accessData.view == 1">
+	<div class="row">
+		<ba-card title="Karigar List" baCardClass="with-scroll"
+			class="data-table-container" addnew="true">
+		<div class="row filter-search">
+				<div class="col-sm-3">
+					<input class="form-control" placeholder='Search ...'  [(ngModel)]="filterQuery" />
+				</div>
+				<div class="col-sm-3">
+						<a translate (click)="kycdetails()"><button
+								class="btn btn-success btn-with-icon" type="button" [disabled]="disablesubmit">
+								<i class="ion-checkmark-circled"></i>Active
+							</button></a>
+				</div>
+				<div class="col-sm-3">
+						<a translate (click)="rervert_details()"><button
+								class="btn btn-primary btn-with-icon" type="button" [disabled]="revertsubmit">
+								<i class="fa fa-pencil-square-o"></i>Inactive
+							</button></a>
+				</div>
+				<div class="col-sm-3" *ngIf="accessData.add == 1"><a translate (click)="createnewvendors()"><button
+						class="btn btn-primary btn-with-icon" type="button">
+						<i class="ion-plus-round"></i>New Dealer 
+					</button></a>
+				</div>
+	   </div>
+		<div class="panel panel-default">
+			<table class="table table-striped"
+				[mfData]="data | dataFilter : filterQuery" #mf="mfDataTable"
+				[mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy"
+				[(mfSortOrder)]="sortOrder">
+				<thead>
+					<tr>
+					    <th style="width: 5%" class="text-center" ><span><input type="checkbox" 
+						 [checked]="overalluser"
+					   (change)="overall_kycdetalis($event.target.checked)"></span></th>
+						<th style="width: 5%" class="text-center" ><mfDefaultSorter
+								by="id_karigar">Id</mfDefaultSorter></th>
+						<th style="width: 15%" ><mfDefaultSorter
+								by="firstname">Name</mfDefaultSorter></th>
+						<th style="width: 15%" c><mfDefaultSorter
+								by="urname">User Name</mfDefaultSorter></th>
+						<th style="width: 15%" ><mfDefaultSorter
+								by="contactno1">Mobile</mfDefaultSorter></th>
+						<th style="width: 10%" ><mfDefaultSorter
+								by="contactno2">Mobile 2</mfDefaultSorter></th>
+						<th style="width: 15%" ><mfDefaultSorter
+								by="company">Company</mfDefaultSorter></th>
+						<th style="width: 10%" class="text-center"><mfDefaultSorter
+								by="status">Status</mfDefaultSorter></th>
+						<th style="width: 20%" class="text-center">Option</th>
+					</tr>
+				</thead>
+				<tbody >
+					<tr *ngFor="let item of mf.data">
+					   <td class="text-center"><span><input type="checkbox"
+                         [checked]="alluser" value='{{item.id_customer}}'
+					   (change)="multiapprove_kycdetalis($event.target.checked,item)"></span></td>
+						<td  class="text-center">{{item.id_karigar}}</td>
+						<td >{{item.firstname}}</td>
+						<td >{{item.urname}}</td>
+						<td >{{item.contactno1}}</td>
+						<td >{{item.contactno2}}</td>
+						<td >{{item.company}}</td>
+						<td class="text-center">{{ (item.status == 1) ? 'Active' :
+							'In Active'}}</td>
+						<td class="text-center">
+							<!-- <button (click)="updatestatus(item.id_karigar)"
+								title="Update Status" class="btn btn-primary btn-icon"
+								type="button">
+								<i class="ion-person-stalker"></i>
+							</button> &nbsp; -->
+							<button (click)="updatevendor(item.id_karigar)"
+								title="View Karigar Info" class="btn btn-primary btn-icon"
+								type="button">
+								<i class="ion-edit"></i>
+							</button>&nbsp;
+							<button (click)="deleteKarigar(item.id_karigar)" *ngIf="accessData.delete == 1"
+								title="Delete Karigar" class="btn btn-danger ion-trash-a"
+								type="button">
+							</button> &nbsp;
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="9"><mfBootstrapPaginator
+								[rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		</ba-card>
+	</div>
+
+<app-modal [title]='title' [showClose]="true"
+		(onClose)="closeall()" #createvendorstatusModal>
+	<form #createfrm="ngForm" novalidate>
+		<div class="row">
+			<div class="col-md-6">
+			   <div class="form-group" style="display:none;">
+					<label for="input01">User Name*</label> <input type="text"
+						class="form-control" #UserName="ngModel"
+						[(ngModel)]="vendors.urname" name="UserName" autofocus
+						placeholder="User Name" *ngIf="isAddMode">
+						<input type="text"
+						class="form-control" #UserName="ngModel"
+						[(ngModel)]="vendors.urname" name="UserName" autofocus
+						placeholder="User Name" *ngIf="isEditMode" readonly>
+				</div>
+				<div class="form-group" *ngIf="isAddMode" style="display:none;">
+					<label for="input01">Password*</label> <input type="password"
+						class="form-control" #Password="ngModel"
+						[(ngModel)]="vendors.psword" name="Password" placeholder="Password"
+						[minLength]="4" >
+				</div>
+				<div class="form-group">
+					<label for="input01">First Name*</label> <input type="text"
+						class="form-control" #FirstName="ngModel"
+						[(ngModel)]="vendors.firstname" name="firstname" 
+						placeholder="First Name" required>
+				</div>
+				<div class="form-group">
+					<label for="input01">Last Name</label> <input type="text"
+						class="form-control" #LastName="ngModel"
+						[(ngModel)]="vendors.lastname" name="lastname"
+						placeholder="Last Name">
+				</div>
+				
+				<div class="form-group" style="display:none;">
+					<label for="input01">Karigar Code</label> <input type="text"
+						class="form-control" #KarigarCode="ngModel"
+						[(ngModel)]="vendors.code_karigar" name="code_karigar"
+						placeholder="Karigar Code">
+				</div>
+				<div class="form-group">
+					<label for="input01">Contact Number2</label> <input type="number"
+						class="form-control" #CNumber2="ngModel"
+						[(ngModel)]="vendors.contactno2" name="CNumber2"
+						placeholder="Enter Additional Contact Number">
+				</div>
+				<!-- <div class="form-group">
+					<label for="input01">Contact Per</label> <input type="email"
+						class="form-control" #emailid="ngModel"
+						[(ngModel)]="vendors.email" name="emailid"
+						placeholder="Email Id">
+				</div> -->
+				<div class="form-group">
+					<label for="input01">Company Name</label> <input type="text"
+						class="form-control" #CompanyName="ngModel"
+						[(ngModel)]="vendors.company" name="CompanyName"
+						placeholder="Company Name">
+				</div>
+			</div> 
+			<div class="col-md-6">
+			    
+				<div class="form-group" >
+					<label for="input01">User Name*</label> <input type="number"
+						class="form-control" #Mobileno="ngModel"
+						[(ngModel)]="vendors.contactno1" name="Mobileno" 
+						placeholder="User Name" required>
+				</div>
+			   <div class="form-group" style="display:none;">
+					<label for="input01">Email</label> <input type="email" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+						class="form-control" #emailid="ngModel"
+						[(ngModel)]="vendors.email" name="emailid"
+						placeholder="Email Id">
+				</div>
+				<div class="form-group">
+					<label for="input01">Address1*</label> <input type="text"
+						class="form-control" #Address1="ngModel"
+						[(ngModel)]="vendors.address1" name="Address1" autofocus
+						placeholder="Address1" required>
+				</div>
+				<div class="form-group" style="display:none;">
+					<label for="input01">Address2</label> <input type="text"
+						class="form-control" #Address2="ngModel"
+						[(ngModel)]="vendors.address2" name="Address2" autofocus
+						placeholder="Address1">
+				</div>
+				<div class="form-group" style="display:none;">
+					<label for="input01">Address3</label> <input type="text"
+						class="form-control" #Address3="ngModel"
+						[(ngModel)]="vendors.address3" name="Address3" autofocus
+						placeholder="Address3">
+				</div>
+				<div class="form-group" style="display:none;">
+					<label for="input01">Country*</label> <select class="form-control"
+						[(ngModel)]="vendors.id_country" name="country"
+						#country="ngModel"  placeholder="Select Country"
+						(change)="getStateforCountry($event.target.value)">
+						<option *ngFor="let con of countries" [value]="con.id_country"
+							class="list-group-item">{{con.name}}</option>
+					</select>
+				</div>
+				<div class="form-group" style="display:none;">
+					<label for="input01">State*</label><select class="form-control"
+						[(ngModel)]="vendors.id_state" name="state" #state="ngModel"
+						  placeholder="Select State"
+						(change)="getCityforState($event.target.value)">
+						<option *ngFor="let st of states" [value]="st.id_state"
+							class="list-group-item">{{st.name}}</option>
+					</select>
+				</div>
+				<div class="form-group" style="display:none;">
+					<label for="input01">City*</label> <select class="form-control"
+						[(ngModel)]="vendors.id_city" name="city" #city="ngModel"
+						 placeholder="Select City">
+						<option *ngFor="let ct of cities" [value]="ct.id_city"
+							class="list-group-item">{{ct.name}}</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="input01">Status</label>
+					<div class="input-demo radio-demo row">
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="vendors.status_karigar" name="status_karigar"
+								id="active" value="1"><span>Active</span>
+							</label>
+						</div>
+						<div class="col-md-4">
+							<label class="radio-inline custom-radio nowrap"> <input
+								type="radio" [(ngModel)]="vendors.status_karigar" name="status_karigar"
+								id="inactive" value="0"><span>Inactive</span>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-primary' (click)="savevendordetails(false,false)"
+				[disabled]="!createfrm.valid || disablesubmit1" *ngIf="isAddMode">Save & New</button>
+			<button class='btn btn-success' (click)="savevendordetails(false,true)"
+				[disabled]="!createfrm.valid  || disablesubmit1" *ngIf="!isEditMode">Save &
+				Close</button>
+			<button class='btn btn-fabkinect' (click)="savevendordetails(true,true)"
+				[disabled]="!createfrm.valid  || disablesubmit1" *ngIf="isEditMode && accessData.edit == 1">Save & Close</button>
+			<button class='btn btn-default' (click)="closeall()">Close</button>
+		</div>
+	</div>
+	</app-modal>
+	{{ bindcreateDetailModal(createvendorstatusModal) }}
+	<app-modal [title]='title' [showClose]="true" (onClose)="closedelete()"
+		#deleteModal>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group deletemsg">Are you sure, you want to
+				delete this Karigar?</div>
+		</div>
+	</div>
+	<br />
+	<br />
+	<div class="mfoot">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<button class='btn btn-danger'
+				(click)="removeKarigar(data.id_karigar)">Delete</button>
+			<button class='btn btn-default' (click)="closedelete()">Close</button>
+		</div>
+	</div>
+
+	</app-modal>
+	{{ binddeleteModal(deleteModal) }}
+</div>
+</div>
